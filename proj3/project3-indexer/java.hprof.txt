@@ -1,0 +1,1625 @@
+JAVA PROFILE 1.0.1, created Fri Feb  6 16:39:17 2015
+
+Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  - Neither the name of Oracle nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Header for -agentlib:hprof (or -Xrunhprof) ASCII Output (JDK 5.0 JVMTI based)
+
+WARNING!  This file format is under development, and is subject to
+change without notice.
+
+This file contains the following types of records:
+
+THREAD START
+THREAD END      mark the lifetime of Java threads
+
+TRACE           represents a Java stack trace.  Each trace consists
+                of a series of stack frames.  Other records refer to
+                TRACEs to identify (1) where object allocations have
+                taken place, (2) the frames in which GC roots were
+                found, and (3) frequently executed methods.
+
+HEAP DUMP       is a complete snapshot of all live objects in the Java
+                heap.  Following distinctions are made:
+
+                ROOT    root set as determined by GC
+                CLS     classes 
+                OBJ     instances
+                ARR     arrays
+
+SITES           is a sorted list of allocation sites.  This identifies
+                the most heavily allocated object types, and the TRACE
+                at which those allocations occurred.
+
+CPU SAMPLES     is a statistical profile of program execution.  The VM
+                periodically samples all running threads, and assigns
+                a quantum to active TRACEs in those threads.  Entries
+                in this record are TRACEs ranked by the percentage of
+                total quanta they consumed; top-ranked TRACEs are
+                typically hot spots in the program.
+
+CPU TIME        is a profile of program execution obtained by measuring
+                the time spent in individual methods (excluding the time
+                spent in callees), as well as by counting the number of
+                times each method is called. Entries in this record are
+                TRACEs ranked by the percentage of total CPU time. The
+                "count" field indicates the number of times each TRACE 
+                is invoked.
+
+MONITOR TIME    is a profile of monitor contention obtained by measuring
+                the time spent by a thread waiting to enter a monitor.
+                Entries in this record are TRACEs ranked by the percentage
+                of total monitor contention time and a brief description
+                of the monitor.  The "count" field indicates the number of 
+                times the monitor was contended at that TRACE.
+
+MONITOR DUMP    is a complete snapshot of all the monitors and threads in 
+                the System.
+
+HEAP DUMP, SITES, CPU SAMPLES|TIME and MONITOR DUMP|TIME records are generated 
+at program exit.  They can also be obtained during program execution by typing 
+Ctrl-\ (on Solaris) or by typing Ctrl-Break (on Win32).
+
+--------
+
+THREAD START (obj=5000016e, id = 200001, name="main", group="main")
+THREAD START (obj=5000016e, id = 200004, name="Abandoned connection cleanup thread", group="main")
+THREAD END (id = 200001)
+THREAD START (obj=5000016e, id = 200005, name="DestroyJavaVM", group="main")
+THREAD END (id = 200005)
+THREAD END (id = 200002)
+TRACE 300365:
+	java.net.SocketOutputStream.socketWrite0(SocketOutputStream.java:Unknown line)
+	java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:113)
+	java.net.SocketOutputStream.write(SocketOutputStream.java:159)
+TRACE 300462:
+	java.io.FileOutputStream.writeBytes(FileOutputStream.java:Unknown line)
+	java.io.FileOutputStream.write(FileOutputStream.java:345)
+	java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
+TRACE 300373:
+	java.net.PlainSocketImpl.socketAvailable(PlainSocketImpl.java:Unknown line)
+	java.net.AbstractPlainSocketImpl.available(AbstractPlainSocketImpl.java:478)
+	java.net.SocketInputStream.available(SocketInputStream.java:245)
+TRACE 300511:
+	com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2598)
+	com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:2778)
+	com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2825)
+TRACE 300367:
+	java.net.SocketInputStream.socketRead0(SocketInputStream.java:Unknown line)
+	java.net.SocketInputStream.read(SocketInputStream.java:152)
+	java.net.SocketInputStream.read(SocketInputStream.java:122)
+TRACE 300513:
+	com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:2156)
+	com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:2313)
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:86)
+TRACE 300500:
+	com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3609)
+	com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:4160)
+	com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2617)
+TRACE 300525:
+	java.io.FileOutputStream.writeBytes(FileOutputStream.java:Unknown line)
+	java.io.FileOutputStream.write(FileOutputStream.java:345)
+	org.apache.lucene.store.FSDirectory$FSIndexOutput$1.write(FSDirectory.java:395)
+TRACE 300522:
+	com.mysql.jdbc.MysqlIO.getResultSet(MysqlIO.java:430)
+	com.mysql.jdbc.MysqlIO.readResultsForQueryOrUpdate(MysqlIO.java:3245)
+	com.mysql.jdbc.MysqlIO.readAllResults(MysqlIO.java:2413)
+TRACE 300487:
+	com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3609)
+	com.mysql.jdbc.MysqlIO.getResultSet(MysqlIO.java:439)
+	com.mysql.jdbc.MysqlIO.readResultsForQueryOrUpdate(MysqlIO.java:3245)
+TRACE 300631:
+	sun.nio.ch.FileDispatcherImpl.force0(FileDispatcherImpl.java:Unknown line)
+	sun.nio.ch.FileDispatcherImpl.force(FileDispatcherImpl.java:77)
+	sun.nio.ch.FileChannelImpl.force(FileChannelImpl.java:377)
+TRACE 300079:
+	java.lang.ClassLoader.defineClass1(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:800)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+TRACE 300080:
+	java.lang.ClassLoader.findBootstrapClass(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.findBootstrapClassOrNull(ClassLoader.java:1070)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:414)
+TRACE 300464:
+	java.lang.System.currentTimeMillis(System.java:Unknown line)
+	com.mysql.jdbc.MysqlIO.send(MysqlIO.java:3985)
+	com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2598)
+TRACE 300048:
+	java.util.zip.ZipFile.read(ZipFile.java:Unknown line)
+	java.util.zip.ZipFile.access$1400(ZipFile.java:56)
+	java.util.zip.ZipFile$ZipFileInputStream.read(ZipFile.java:679)
+TRACE 300625:
+	java.io.UnixFileSystem.delete0(UnixFileSystem.java:Unknown line)
+	java.io.UnixFileSystem.delete(UnixFileSystem.java:265)
+	java.io.File.delete(File.java:1035)
+TRACE 300137:
+	java.lang.ClassLoader$NativeLibrary.load(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.loadLibrary1(ClassLoader.java:1965)
+	java.lang.ClassLoader.loadLibrary0(ClassLoader.java:1890)
+TRACE 300521:
+	org.apache.lucene.util.BytesRefHash.equals(BytesRefHash.java:204)
+	org.apache.lucene.util.BytesRefHash.findHash(BytesRefHash.java:351)
+	org.apache.lucene.util.BytesRefHash.add(BytesRefHash.java:276)
+TRACE 300526:
+	java.lang.Character.codePointAt(Character.java:4734)
+	org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken(StandardTokenizerImpl.java:727)
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:198)
+TRACE 300034:
+	java.util.zip.ZipFile.open(ZipFile.java:Unknown line)
+	java.util.zip.ZipFile.<init>(ZipFile.java:215)
+	java.util.zip.ZipFile.<init>(ZipFile.java:145)
+TRACE 300496:
+	org.apache.lucene.index.TermsHashPerField.writeVInt(TermsHashPerField.java:224)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.addTerm(FreqProxTermsWriterPerField.java:156)
+	org.apache.lucene.index.TermsHashPerField.add(TermsHashPerField.java:185)
+TRACE 300368:
+	java.lang.System.currentTimeMillis(System.java:Unknown line)
+	com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3715)
+	com.mysql.jdbc.MysqlIO.nextRowFast(MysqlIO.java:2156)
+TRACE 300486:
+	java.lang.Character.codePointAt(Character.java:4734)
+	org.apache.lucene.analysis.util.CharacterUtils$Java5CharacterUtils.codePointAt(CharacterUtils.java:261)
+	org.apache.lucene.analysis.util.CharacterUtils.toLowerCase(CharacterUtils.java:140)
+TRACE 300528:
+	org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken(StandardTokenizerImpl.java:764)
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:198)
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+TRACE 300538:
+	java.lang.Character.toLowerCase(Character.java:6148)
+	org.apache.lucene.analysis.util.CharacterUtils.toLowerCase(CharacterUtils.java:140)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+TRACE 300621:
+	sun.nio.ch.FileDispatcherImpl.pread0(FileDispatcherImpl.java:Unknown line)
+	sun.nio.ch.FileDispatcherImpl.pread(FileDispatcherImpl.java:52)
+	sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:220)
+TRACE 300114:
+	java.io.UnixFileSystem.getBooleanAttributes0(UnixFileSystem.java:Unknown line)
+	java.io.UnixFileSystem.getBooleanAttributes(UnixFileSystem.java:242)
+	java.io.File.exists(File.java:813)
+TRACE 300277:
+	java.security.AccessController.doPrivileged(AccessController.java:Unknown line)
+	java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+TRACE 300463:
+	java.lang.AbstractStringBuilder.ensureCapacityInternal(AbstractStringBuilder.java:114)
+	java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:415)
+	java.lang.StringBuilder.append(StringBuilder.java:132)
+TRACE 300478:
+	java.lang.System.currentTimeMillis(System.java:Unknown line)
+	com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2873)
+	com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:2156)
+TRACE 300495:
+	java.lang.System.currentTimeMillis(System.java:Unknown line)
+	com.mysql.jdbc.MysqlIO.readPacket(MysqlIO.java:671)
+	com.mysql.jdbc.MysqlIO.getResultSet(MysqlIO.java:430)
+TRACE 300524:
+	org.apache.lucene.util.BytesRefBuilder.grow(BytesRefBuilder.java:65)
+	org.apache.lucene.util.BytesRefBuilder.copyChars(BytesRefBuilder.java:155)
+	org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl.fillBytesRef(CharTermAttributeImpl.java:90)
+TRACE 300169:
+	com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:347)
+	java.sql.DriverManager.getConnection(DriverManager.java:571)
+	java.sql.DriverManager.getConnection(DriverManager.java:215)
+TRACE 300172:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:409)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+TRACE 300370:
+	com.mysql.jdbc.util.ReadAheadInputStream.read(ReadAheadInputStream.java:189)
+	com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:3163)
+	com.mysql.jdbc.MysqlIO.nextRowFast(MysqlIO.java:2271)
+TRACE 300531:
+	org.apache.lucene.analysis.util.CharArrayMap.getHashCode(CharArrayMap.java:319)
+	org.apache.lucene.analysis.util.CharArrayMap.getSlot(CharArrayMap.java:174)
+	org.apache.lucene.analysis.util.CharArrayMap.containsKey(CharArrayMap.java:136)
+TRACE 300605:
+	org.apache.lucene.store.DataInput.readVInt(DataInput.java:125)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:454)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+TRACE 300119:
+	java.lang.Class.getDeclaredMethods0(Class.java:Unknown line)
+	java.lang.Class.privateGetDeclaredMethods(Class.java:2615)
+	java.lang.Class.getMethod0(Class.java:2856)
+TRACE 300149:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+TRACE 300274:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	sun.misc.PerfCounter.addElapsedTimeFrom(PerfCounter.java:119)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:448)
+TRACE 300281:
+	java.lang.Class.getDeclaredConstructors0(Class.java:Unknown line)
+	java.lang.Class.privateGetDeclaredConstructors(Class.java:2585)
+	java.lang.Class.getConstructor0(Class.java:2885)
+TRACE 300372:
+	com.mysql.jdbc.MysqlIO.nextRowFast(MysqlIO.java:2156)
+	com.mysql.jdbc.MysqlIO.nextRow(MysqlIO.java:2046)
+	com.mysql.jdbc.MysqlIO.readSingleRowSet(MysqlIO.java:3554)
+TRACE 300471:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:412)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+TRACE 300520:
+	org.apache.lucene.util.StringHelper.murmurhash3_x86_32(StringHelper.java:185)
+	org.apache.lucene.util.BytesRefHash.doHash(BytesRefHash.java:460)
+	org.apache.lucene.util.BytesRefHash.findHash(BytesRefHash.java:346)
+TRACE 300527:
+	org.apache.lucene.index.TermsHashPerField.writeVInt(TermsHashPerField.java:221)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.addTerm(FreqProxTermsWriterPerField.java:156)
+	org.apache.lucene.index.TermsHashPerField.add(TermsHashPerField.java:185)
+TRACE 300535:
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:208)
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:62)
+TRACE 300539:
+	org.apache.lucene.analysis.util.CharArrayMap.getSlot(CharArrayMap.java:183)
+	org.apache.lucene.analysis.util.CharArrayMap.containsKey(CharArrayMap.java:136)
+	org.apache.lucene.analysis.util.CharArraySet.contains(CharArraySet.java:121)
+TRACE 300544:
+	org.apache.lucene.analysis.util.CharacterUtils.toLowerCase(CharacterUtils.java:140)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+	org.apache.lucene.analysis.util.FilteringTokenFilter.incrementToken(FilteringTokenFilter.java:90)
+TRACE 300573:
+	org.apache.lucene.util.BytesRefHash$1.comparePivot(BytesRefHash.java:193)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:71)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:88)
+TRACE 300015:
+	java.lang.Class.forName0(Class.java:Unknown line)
+	java.lang.Class.forName(Class.java:274)
+	sun.nio.cs.FastCharsetProvider.lookup(FastCharsetProvider.java:119)
+TRACE 300066:
+	java.io.FileInputStream.open(FileInputStream.java:Unknown line)
+	java.io.FileInputStream.<init>(FileInputStream.java:146)
+	sun.misc.URLClassPath$FileLoader$1.getInputStream(URLClassPath.java:1086)
+TRACE 300201:
+	com.mysql.jdbc.ConnectionImpl.coreConnect(ConnectionImpl.java:2489)
+	com.mysql.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:2526)
+	com.mysql.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:2311)
+TRACE 300253:
+	com.mysql.jdbc.MysqlIO.buildResultSetWithRows(MysqlIO.java:3267)
+	com.mysql.jdbc.MysqlIO.getResultSet(MysqlIO.java:501)
+	com.mysql.jdbc.MysqlIO.readResultsForQueryOrUpdate(MysqlIO.java:3245)
+TRACE 300304:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:409)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:412)
+TRACE 300415:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:410)
+	java.net.URLClassLoader.access$100(URLClassLoader.java:71)
+TRACE 300479:
+	org.apache.lucene.util.ByteBlockPool$DirectTrackingAllocator.getByteBlock(ByteBlockPool.java:103)
+	org.apache.lucene.util.ByteBlockPool.nextBuffer(ByteBlockPool.java:202)
+	org.apache.lucene.util.ByteBlockPool.allocSlice(ByteBlockPool.java:257)
+TRACE 300505:
+	java.lang.Object.notifyAll(Object.java:Unknown line)
+	org.apache.lucene.index.DocumentsWriterStallControl.updateStalled(DocumentsWriterStallControl.java:60)
+	org.apache.lucene.index.DocumentsWriterFlushControl.updateStallState(DocumentsWriterFlushControl.java:251)
+TRACE 300512:
+	org.apache.lucene.analysis.util.CharArrayMap.getSlot(CharArrayMap.java:177)
+	org.apache.lucene.analysis.util.CharArrayMap.containsKey(CharArrayMap.java:136)
+	org.apache.lucene.analysis.util.CharArraySet.contains(CharArraySet.java:121)
+TRACE 300514:
+	org.apache.lucene.util.StringHelper.murmurhash3_x86_32(StringHelper.java:185)
+	org.apache.lucene.util.BytesRefHash.doHash(BytesRefHash.java:460)
+	org.apache.lucene.util.BytesRefHash.rehash(BytesRefHash.java:432)
+TRACE 300517:
+	org.apache.lucene.index.TermsHashPerField.writeVInt(TermsHashPerField.java:224)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.writeProx(FreqProxTermsWriterPerField.java:80)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.addTerm(FreqProxTermsWriterPerField.java:180)
+TRACE 300523:
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:198)
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:62)
+TRACE 300530:
+	org.apache.lucene.index.TermsHashPerField.writeVInt(TermsHashPerField.java:221)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.writeProx(FreqProxTermsWriterPerField.java:80)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.addTerm(FreqProxTermsWriterPerField.java:168)
+TRACE 300532:
+	org.apache.lucene.util.BytesRefHash.rehash(BytesRefHash.java:414)
+	org.apache.lucene.util.BytesRefHash.add(BytesRefHash.java:323)
+	org.apache.lucene.index.TermsHashPerField.add(TermsHashPerField.java:151)
+TRACE 300536:
+	org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken(StandardTokenizerImpl.java:814)
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:198)
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+TRACE 300537:
+	org.apache.lucene.analysis.util.CharacterUtils.toLowerCase(CharacterUtils.java:140)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+	org.apache.lucene.analysis.util.FilteringTokenFilter.incrementToken(FilteringTokenFilter.java:90)
+TRACE 300542:
+	org.apache.lucene.util.BytesRefHash.add(BytesRefHash.java:276)
+	org.apache.lucene.index.TermsHashPerField.add(TermsHashPerField.java:151)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:659)
+TRACE 300543:
+	org.apache.lucene.util.BytesRefHash.equals(BytesRefHash.java:204)
+	org.apache.lucene.util.BytesRefHash.findHash(BytesRefHash.java:358)
+	org.apache.lucene.util.BytesRefHash.add(BytesRefHash.java:276)
+TRACE 300580:
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.finishTerm(BlockTreeTermsWriter.java:915)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:495)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+TRACE 300581:
+	org.apache.lucene.util.fst.BytesStore.writeByte(BytesStore.java:89)
+	org.apache.lucene.util.fst.FST.<init>(FST.java:303)
+	org.apache.lucene.util.fst.Builder.<init>(Builder.java:155)
+TRACE 300595:
+	org.apache.lucene.util.BytesRefHash$1.comparePivot(BytesRefHash.java:193)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:71)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:87)
+TRACE 300603:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:424)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300606:
+	org.apache.lucene.store.DataInput.readVInt(DataInput.java:122)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:454)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+TRACE 300002:
+	java.net.URLClassLoader$1.run(URLClassLoader.java:358)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	java.security.AccessController.doPrivileged(AccessController.java:Unknown line)
+TRACE 300008:
+	sun.misc.URLClassPath$Loader.<init>(URLClassPath.java:478)
+	sun.misc.URLClassPath$JarLoader.<init>(URLClassPath.java:610)
+	sun.misc.URLClassPath$3.run(URLClassPath.java:366)
+TRACE 300021:
+	sun.misc.PerfCounter.getZipFileOpenTime(PerfCounter.java:182)
+	java.util.zip.ZipFile.<init>(ZipFile.java:216)
+	java.util.zip.ZipFile.<init>(ZipFile.java:145)
+TRACE 300026:
+	java.lang.String.charAt(String.java:657)
+	java.io.UnixFileSystem.normalize(UnixFileSystem.java:87)
+	java.io.File.<init>(File.java:279)
+TRACE 300036:
+	java.util.zip.Inflater.init(Inflater.java:Unknown line)
+	java.util.zip.Inflater.<init>(Inflater.java:103)
+	java.util.zip.ZipFile.getInflater(ZipFile.java:450)
+TRACE 300040:
+	java.util.jar.Manifest.read(Manifest.java:195)
+	java.util.jar.Manifest.<init>(Manifest.java:69)
+	java.util.jar.JarFile.getManifestFromReference(JarFile.java:181)
+TRACE 300043:
+	java.util.jar.JarFile.getManifestFromReference(JarFile.java:183)
+	java.util.jar.JarFile.getManifest(JarFile.java:167)
+	sun.misc.URLClassPath$JarLoader.getClassPath(URLClassPath.java:985)
+TRACE 300049:
+	sun.misc.ASCIICaseInsensitiveComparator.lowerCaseHashCode(ASCIICaseInsensitiveComparator.java:73)
+	java.util.jar.Attributes$Name.hashCode(Attributes.java:514)
+	java.util.HashMap.hash(HashMap.java:362)
+TRACE 300053:
+	java.nio.HeapByteBuffer.<init>(HeapByteBuffer.java:57)
+	java.nio.ByteBuffer.allocate(ByteBuffer.java:331)
+	sun.nio.cs.StreamDecoder.<init>(StreamDecoder.java:250)
+TRACE 300061:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	sun.misc.PerfCounter.addElapsedTimeFrom(PerfCounter.java:119)
+	java.util.zip.ZipFile.<init>(ZipFile.java:216)
+TRACE 300062:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	java.util.zip.ZipFile.<init>(ZipFile.java:214)
+	java.util.zip.ZipFile.<init>(ZipFile.java:145)
+TRACE 300072:
+	sun.net.www.MessageHeader.grow(MessageHeader.java:344)
+	sun.net.www.MessageHeader.<init>(MessageHeader.java:56)
+	sun.net.www.URLConnection.<init>(URLConnection.java:58)
+TRACE 300078:
+	java.security.BasicPermission.newPermissionCollection(BasicPermission.java:260)
+	java.security.Permissions.getPermissionCollection(Permissions.java:255)
+	java.security.Permissions.add(Permissions.java:133)
+TRACE 300084:
+	sun.security.util.ManifestEntryVerifier.<init>(ManifestEntryVerifier.java:84)
+	java.util.jar.JarFile.initializeVerifier(JarFile.java:341)
+	java.util.jar.JarFile.getInputStream(JarFile.java:415)
+TRACE 300086:
+	com.mysql.jdbc.NonRegisteringDriver.<clinit>(NonRegisteringDriver.java:84)
+	java.lang.Class.forName0(Class.java:Unknown line)
+	java.lang.Class.forName(Class.java:191)
+TRACE 300092:
+	java.util.ServiceLoader.iterator(ServiceLoader.java:431)
+	java.sql.DriverManager$2.run(DriverManager.java:494)
+	java.sql.DriverManager$2.run(DriverManager.java:490)
+TRACE 300098:
+	sun.nio.cs.UTF_8$Decoder.decodeArrayLoop(UTF_8.java:201)
+	sun.nio.cs.UTF_8$Decoder.decodeLoop(UTF_8.java:354)
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:561)
+TRACE 300101:
+	java.util.HashMap.getEntry(HashMap.java:458)
+	java.util.LinkedHashMap.get(LinkedHashMap.java:301)
+	java.io.ExpiringCache.entryFor(ExpiringCache.java:102)
+TRACE 300108:
+	sun.net.www.protocol.jar.Handler.openConnection(Handler.java:41)
+	java.net.URL.openConnection(URL.java:971)
+	java.net.URL.openStream(URL.java:1037)
+TRACE 300118:
+	com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:328)
+	java.sql.DriverManager.getConnection(DriverManager.java:571)
+	java.sql.DriverManager.getConnection(DriverManager.java:215)
+TRACE 300123:
+	sun.util.calendar.ZoneInfo.getTimeZone(ZoneInfo.java:663)
+	java.util.TimeZone.getTimeZone(TimeZone.java:566)
+	java.util.TimeZone.setDefaultZone(TimeZone.java:663)
+TRACE 300132:
+	java.lang.Class.forName0(Class.java:Unknown line)
+	java.lang.Class.forName(Class.java:274)
+	sun.nio.fs.DefaultFileSystemProvider$1.run(DefaultFileSystemProvider.java:47)
+TRACE 300136:
+	sun.nio.fs.UnixNativeDispatcher.<clinit>(UnixNativeDispatcher.java:559)
+	sun.nio.fs.UnixFileSystem.<init>(UnixFileSystem.java:67)
+	sun.nio.fs.LinuxFileSystem.<init>(LinuxFileSystem.java:39)
+TRACE 300139:
+	java.nio.file.FileSystems$DefaultFileSystemHolder.defaultFileSystem(FileSystems.java:103)
+	java.nio.file.FileSystems$DefaultFileSystemHolder.<clinit>(FileSystems.java:90)
+	java.nio.file.FileSystems.getDefault(FileSystems.java:176)
+TRACE 300146:
+	sun.nio.fs.NativeBuffer.<init>(NativeBuffer.java:59)
+	sun.nio.fs.NativeBuffers.allocNativeBuffer(NativeBuffers.java:49)
+	sun.nio.fs.UnixNativeDispatcher.copyToNativeBuffer(UnixNativeDispatcher.java:44)
+TRACE 300155:
+	java.util.ResourceBundle$CacheKey.<init>(ResourceBundle.java:520)
+	java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1259)
+	java.util.ResourceBundle.getBundle(ResourceBundle.java:1028)
+TRACE 300160:
+	java.util.Properties$LineReader.readLine(Properties.java:422)
+	java.util.Properties.load0(Properties.java:353)
+	java.util.Properties.load(Properties.java:341)
+TRACE 300162:
+	java.lang.ThreadLocal$ThreadLocalMap.getEntry(ThreadLocal.java:376)
+	java.lang.ThreadLocal$ThreadLocalMap.access$000(ThreadLocal.java:261)
+	java.lang.ThreadLocal.get(ThreadLocal.java:146)
+TRACE 300163:
+	com.mysql.jdbc.Util.stackTraceToString(Util.java:369)
+	com.mysql.jdbc.Util.<clinit>(Util.java:120)
+	com.mysql.jdbc.NonRegisteringDriver.parseURL(NonRegisteringDriver.java:814)
+TRACE 300168:
+	sun.misc.URLClassPath$JarLoader.getResource(URLClassPath.java:829)
+	sun.misc.URLClassPath.getResource(URLClassPath.java:199)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:358)
+TRACE 300170:
+	java.lang.Class.getDeclaredFields0(Class.java:Unknown line)
+	java.lang.Class.privateGetDeclaredFields(Class.java:2499)
+	java.lang.Class.getDeclaredFields(Class.java:1811)
+TRACE 300177:
+	java.text.MessageFormat.subformat(MessageFormat.java:1317)
+	java.text.MessageFormat.format(MessageFormat.java:860)
+	java.text.Format.format(Format.java:157)
+TRACE 300180:
+	java.util.Collections$UnmodifiableMap.<init>(Collections.java:1329)
+	java.util.Collections.unmodifiableMap(Collections.java:1318)
+	com.mysql.jdbc.CharsetMapping.<clinit>(CharsetMapping.java:193)
+TRACE 300184:
+	java.lang.String.toUpperCase(String.java:2569)
+	com.mysql.jdbc.CharsetMapping.<clinit>(CharsetMapping.java:315)
+	com.mysql.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:476)
+TRACE 300186:
+	java.util.StringTokenizer.countTokens(StringTokenizer.java:422)
+	com.mysql.jdbc.StringUtils.split(StringUtils.java:1114)
+	com.mysql.jdbc.CharsetMapping.populateMapWithKeyValuePairsUnversioned(CharsetMapping.java:850)
+TRACE 300187:
+	java.util.Calendar.setWeekCountData(Calendar.java:2590)
+	java.util.Calendar.<init>(Calendar.java:956)
+	java.util.GregorianCalendar.<init>(GregorianCalendar.java:619)
+TRACE 300194:
+	sun.util.calendar.Gregorian.newCalendarDate(Gregorian.java:85)
+	java.util.GregorianCalendar.<init>(GregorianCalendar.java:620)
+	java.util.GregorianCalendar.<init>(GregorianCalendar.java:586)
+TRACE 300198:
+	com.mysql.jdbc.ConnectionImpl.getMetaData(ConnectionImpl.java:3249)
+	com.mysql.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:832)
+	com.mysql.jdbc.JDBC4Connection.<init>(JDBC4Connection.java:47)
+TRACE 300199:
+	java.util.TreeMap.navigableKeySet(TreeMap.java:806)
+	java.util.TreeMap.keySet(TreeMap.java:798)
+	com.mysql.jdbc.DatabaseMetaData.<clinit>(DatabaseMetaData.java:836)
+TRACE 300202:
+	java.lang.Class.forName0(Class.java:Unknown line)
+	java.lang.Class.forName(Class.java:191)
+	com.mysql.jdbc.MysqlIO.createSocketFactory(MysqlIO.java:3455)
+TRACE 300209:
+	java.net.InetAddressImplFactory.create(InetAddress.java:1613)
+	java.net.InetAddress.<clinit>(InetAddress.java:945)
+	com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:248)
+TRACE 300224:
+	java.net.Inet6Address.<clinit>(Inet6Address.java:571)
+	java.net.Inet6AddressImpl.lookupAllHostAddr(Inet6AddressImpl.java:Unknown line)
+	java.net.InetAddress$1.lookupAllHostAddr(InetAddress.java:901)
+TRACE 300226:
+	java.lang.Class.getDeclaredFields0(Class.java:Unknown line)
+	java.lang.Class.privateGetDeclaredFields(Class.java:2499)
+	java.lang.Class.getDeclaredField(Class.java:1951)
+TRACE 300227:
+	java.net.Socket.setImpl(Socket.java:493)
+	java.net.Socket.<init>(Socket.java:414)
+	java.net.Socket.<init>(Socket.java:241)
+TRACE 300234:
+	sun.net.spi.DefaultProxySelector.select(DefaultProxySelector.java:199)
+	java.net.SocksSocketImpl.connect(SocksSocketImpl.java:384)
+	java.net.Socket.connect(Socket.java:579)
+TRACE 300240:
+	java.net.AbstractPlainSocketImpl.getInputStream(AbstractPlainSocketImpl.java:415)
+	java.net.Socket$2.run(Socket.java:887)
+	java.net.Socket$2.run(Socket.java:885)
+TRACE 300247:
+	com.mysql.jdbc.MysqlIO.loadAuthenticationPlugins(MysqlIO.java:1521)
+	com.mysql.jdbc.MysqlIO.proceedHandshakeWithPluggableAuthentication(MysqlIO.java:1665)
+	com.mysql.jdbc.MysqlIO.doHandshake(MysqlIO.java:1290)
+TRACE 300249:
+	com.mysql.jdbc.SingleByteCharsetConverter.<clinit>(SingleByteCharsetConverter.java:60)
+	com.mysql.jdbc.ConnectionImpl.getCharsetConverter(ConnectionImpl.java:3036)
+	com.mysql.jdbc.StringUtils.getBytes(StringUtils.java:714)
+TRACE 300250:
+	com.mysql.jdbc.SingleByteCharsetConverter.<clinit>(SingleByteCharsetConverter.java:61)
+	com.mysql.jdbc.ConnectionImpl.getCharsetConverter(ConnectionImpl.java:3036)
+	com.mysql.jdbc.StringUtils.getBytes(StringUtils.java:714)
+TRACE 300251:
+	com.mysql.jdbc.ConnectionImpl.createStatement(ConnectionImpl.java:2685)
+	com.mysql.jdbc.ConnectionImpl.createStatement(ConnectionImpl.java:2665)
+	com.mysql.jdbc.ConnectionImpl.getMetadataSafeStatement(ConnectionImpl.java:3253)
+TRACE 300252:
+	com.mysql.jdbc.StatementImpl.<init>(StatementImpl.java:302)
+	com.mysql.jdbc.ConnectionImpl.createStatement(ConnectionImpl.java:2685)
+	com.mysql.jdbc.ConnectionImpl.createStatement(ConnectionImpl.java:2665)
+TRACE 300257:
+	java.lang.Math.getExponent(Math.java:1310)
+	java.lang.StrictMath.floorOrCeil(StrictMath.java:355)
+	java.lang.StrictMath.floor(StrictMath.java:340)
+TRACE 300259:
+	java.nio.HeapCharBuffer.toString(HeapCharBuffer.java:561)
+	java.nio.CharBuffer.toString(CharBuffer.java:1201)
+	com.mysql.jdbc.StringUtils.toString(StringUtils.java:2010)
+TRACE 300265:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	sun.misc.PerfCounter.addElapsedTimeFrom(PerfCounter.java:119)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:429)
+TRACE 300266:
+	java.util.zip.ZipCoder.getBytes(ZipCoder.java:77)
+	java.util.zip.ZipFile.getEntry(ZipFile.java:306)
+	java.util.jar.JarFile.getEntry(JarFile.java:227)
+TRACE 300267:
+	sun.reflect.UnsafeFieldAccessorFactory.newFieldAccessor(UnsafeFieldAccessorFactory.java:83)
+	sun.reflect.ReflectionFactory.newFieldAccessor(ReflectionFactory.java:140)
+	java.lang.reflect.Field.acquireFieldAccessor(Field.java:1057)
+TRACE 300270:
+	org.apache.lucene.util.Constants.<clinit>(Constants.java:114)
+	org.apache.lucene.store.FSDirectory.open(FSDirectory.java:179)
+	org.apache.lucene.store.FSDirectory.open(FSDirectory.java:173)
+TRACE 300271:
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:63)
+	edu.ucla.cs.cs144.Indexer.main(Indexer.java:120)
+TRACE 300272:
+	java.net.URL.<init>(URL.java:507)
+	java.net.URL.<init>(URL.java:482)
+	sun.misc.URLClassPath$JarLoader.checkResource(URLClassPath.java:757)
+TRACE 300273:
+	java.nio.DirectLongBufferU.ix(DirectLongBufferU.java:245)
+	java.nio.DirectLongBufferU.put(DirectLongBufferU.java:300)
+	sun.misc.PerfCounter.add(PerfCounter.java:98)
+TRACE 300276:
+	java.lang.System.getSecurityManager(System.java:331)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:303)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+TRACE 300278:
+	org.apache.lucene.codecs.Codec.<clinit>(Codec.java:41)
+	org.apache.lucene.index.LiveIndexWriterConfig.<init>(LiveIndexWriterConfig.java:125)
+	org.apache.lucene.index.IndexWriterConfig.<init>(IndexWriterConfig.java:171)
+TRACE 300280:
+	org.apache.lucene.util.SPIClassIterator.loadNextProfile(SPIClassIterator.java:110)
+	org.apache.lucene.util.SPIClassIterator.hasNext(SPIClassIterator.java:128)
+	org.apache.lucene.util.NamedSPILoader.reload(NamedSPILoader.java:64)
+TRACE 300282:
+	org.apache.lucene.codecs.lucene40.Lucene40Codec.<init>(Lucene40Codec.java:50)
+	sun.reflect.NativeConstructorAccessorImpl.newInstance0(NativeConstructorAccessorImpl.java:Unknown line)
+	sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+TRACE 300283:
+	org.apache.lucene.codecs.lucene3x.Lucene3xSegmentInfoFormat.<init>(Lucene3xSegmentInfoFormat.java:33)
+	org.apache.lucene.codecs.lucene3x.Lucene3xCodec.<init>(Lucene3xCodec.java:59)
+	sun.reflect.NativeConstructorAccessorImpl.newInstance0(NativeConstructorAccessorImpl.java:Unknown line)
+TRACE 300284:
+	sun.reflect.NativeConstructorAccessorImpl.newInstance0(NativeConstructorAccessorImpl.java:Unknown line)
+	sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+TRACE 300285:
+	java.util.zip.InflaterInputStream.read(InflaterInputStream.java:142)
+	sun.misc.Resource.getBytes(Resource.java:124)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:444)
+TRACE 300286:
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:65)
+	edu.ucla.cs.cs144.Indexer.main(Indexer.java:120)
+TRACE 300287:
+	java.nio.channels.FileChannel.<clinit>(FileChannel.java:290)
+	org.apache.lucene.store.NativeFSLock.obtain(NativeFSLockFactory.java:167)
+	org.apache.lucene.store.Lock.obtain(Lock.java:77)
+TRACE 300296:
+	sun.nio.ch.FileChannelImpl.<init>(FileChannelImpl.java:64)
+	sun.nio.ch.FileChannelImpl.open(FileChannelImpl.java:94)
+	sun.nio.fs.UnixChannelFactory.newFileChannel(UnixChannelFactory.java:137)
+TRACE 300309:
+	java.util.zip.CRC32.updateBytes(CRC32.java:Unknown line)
+	java.util.zip.CRC32.update(CRC32.java:65)
+	org.apache.lucene.store.BufferedChecksum.flush(BufferedChecksum.java:80)
+TRACE 300313:
+	java.util.regex.Pattern.newSingle(Pattern.java:3305)
+	java.util.regex.Pattern.atom(Pattern.java:2197)
+	java.util.regex.Pattern.sequence(Pattern.java:2097)
+TRACE 300322:
+	java.util.regex.Pattern.group0(Pattern.java:2880)
+	java.util.regex.Pattern.sequence(Pattern.java:2018)
+	java.util.regex.Pattern.expr(Pattern.java:1964)
+TRACE 300328:
+	org.apache.lucene.codecs.lucene46.Lucene46SegmentInfoReader.read(Lucene46SegmentInfoReader.java:78)
+	org.apache.lucene.index.SegmentInfos.read(SegmentInfos.java:358)
+	org.apache.lucene.index.SegmentInfos$1.doBody(SegmentInfos.java:454)
+TRACE 300330:
+	org.apache.lucene.index.IndexWriter.<init>(IndexWriter.java:818)
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:65)
+	edu.ucla.cs.cs144.Indexer.main(Indexer.java:120)
+TRACE 300332:
+	java.util.EnumSet.noneOf(EnumSet.java:113)
+	org.apache.lucene.util.RamUsageEstimator.<clinit>(RamUsageEstimator.java:151)
+	org.apache.lucene.index.BufferedUpdates.<clinit>(BufferedUpdates.java:55)
+TRACE 300334:
+	java.util.Collections.singleton(Collections.java:3296)
+	java.lang.management.PlatformComponent.defaultKeyProperties(PlatformComponent.java:339)
+	java.lang.management.PlatformComponent.<clinit>(PlatformComponent.java:66)
+TRACE 300345:
+	java.lang.management.PlatformComponent.<clinit>(PlatformComponent.java:209)
+	java.lang.management.ManagementFactory.getPlatformMXBean(ManagementFactory.java:643)
+	org.apache.lucene.util.RamUsageEstimator.<clinit>(RamUsageEstimator.java:223)
+TRACE 300355:
+	sun.management.Flag.initialize(Flag.java:Unknown line)
+	sun.management.Flag.<clinit>(Flag.java:117)
+	sun.management.HotSpotDiagnostic.getVMOption(HotSpotDiagnostic.java:71)
+TRACE 300356:
+	org.apache.lucene.index.DocumentsWriter.<init>(DocumentsWriter.java:135)
+	org.apache.lucene.index.IndexWriter.<init>(IndexWriter.java:818)
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:65)
+TRACE 300357:
+	org.apache.lucene.index.IndexWriter.<init>(IndexWriter.java:824)
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:65)
+	edu.ucla.cs.cs144.Indexer.main(Indexer.java:120)
+TRACE 300359:
+	java.util.HashMap$Values.<init>(HashMap.java:1036)
+	java.util.HashMap.values(HashMap.java:1033)
+	org.apache.lucene.index.SegmentCommitInfo.files(SegmentCommitInfo.java:240)
+TRACE 300361:
+	java.util.Collections$UnmodifiableMap.entrySet(Collections.java:1366)
+	java.util.HashMap.putAllForCreate(HashMap.java:554)
+	java.util.HashMap.<init>(HashMap.java:298)
+TRACE 300364:
+	com.mysql.jdbc.ConnectionImpl.clientPrepareStatement(ConnectionImpl.java:1573)
+	com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java:4597)
+	com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java:4495)
+TRACE 300366:
+	com.mysql.jdbc.util.ReadAheadInputStream.readFromUnderlyingStreamIfNecessary(ReadAheadInputStream.java:124)
+	com.mysql.jdbc.util.ReadAheadInputStream.read(ReadAheadInputStream.java:189)
+	com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:3163)
+TRACE 300369:
+	com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3669)
+	com.mysql.jdbc.MysqlIO.nextRowFast(MysqlIO.java:2156)
+	com.mysql.jdbc.MysqlIO.nextRow(MysqlIO.java:2046)
+TRACE 300371:
+	com.mysql.jdbc.Buffer.setBufLength(Buffer.java:485)
+	com.mysql.jdbc.Buffer.<init>(Buffer.java:60)
+	com.mysql.jdbc.MysqlIO.nextRow(MysqlIO.java:2089)
+TRACE 300374:
+	com.mysql.jdbc.MysqlIO.nextRow(MysqlIO.java:2089)
+	com.mysql.jdbc.MysqlIO.nextRowFast(MysqlIO.java:2159)
+	com.mysql.jdbc.MysqlIO.nextRow(MysqlIO.java:2046)
+TRACE 300375:
+	com.mysql.jdbc.Buffer.<init>(Buffer.java:59)
+	com.mysql.jdbc.MysqlIO.nextRow(MysqlIO.java:2089)
+	com.mysql.jdbc.MysqlIO.nextRowFast(MysqlIO.java:2159)
+TRACE 300376:
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:91)
+	edu.ucla.cs.cs144.Indexer.main(Indexer.java:120)
+TRACE 300377:
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:92)
+	edu.ucla.cs.cs144.Indexer.main(Indexer.java:120)
+TRACE 300378:
+	sun.misc.Resource.getBytes(Resource.java:89)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:444)
+	java.net.URLClassLoader.access$100(URLClassLoader.java:71)
+TRACE 300385:
+	sun.util.LocaleServiceProviderPool.<init>(LocaleServiceProviderPool.java:68)
+	sun.util.LocaleServiceProviderPool.getPool(LocaleServiceProviderPool.java:111)
+	java.text.NumberFormat.getInstance(NumberFormat.java:746)
+TRACE 300392:
+	java.util.Currency.readIntArray(Currency.java:650)
+	java.util.Currency.access$000(Currency.java:76)
+	java.util.Currency$1.run(Currency.java:209)
+TRACE 300395:
+	java.util.concurrent.locks.ReentrantLock$Sync.nonfairTryAcquire(ReentrantLock.java:134)
+	java.util.concurrent.locks.ReentrantLock.tryLock(ReentrantLock.java:370)
+	java.util.concurrent.ConcurrentHashMap$Segment.put(ConcurrentHashMap.java:432)
+TRACE 300396:
+	org.apache.lucene.codecs.compressing.CompressingStoredFieldsWriter.<init>(CompressingStoredFieldsWriter.java:116)
+	org.apache.lucene.codecs.compressing.CompressingStoredFieldsFormat.fieldsWriter(CompressingStoredFieldsFormat.java:120)
+	org.apache.lucene.index.DefaultIndexingChain.initStoredFieldsWriter(DefaultIndexingChain.java:83)
+TRACE 300397:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:412)
+TRACE 300398:
+	org.apache.lucene.index.TermsHashPerField.<init>(TermsHashPerField.java:72)
+	org.apache.lucene.index.TermVectorsConsumerPerField.<init>(TermVectorsConsumerPerField.java:44)
+	org.apache.lucene.index.TermVectorsConsumer.addField(TermVectorsConsumer.java:145)
+TRACE 300399:
+	java.lang.String.concat(String.java:1970)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:357)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+TRACE 300400:
+	java.lang.invoke.MemberName.getFactory(MemberName.java:768)
+	java.lang.invoke.MethodHandles.<clinit>(MethodHandles.java:61)
+	org.apache.lucene.util.AttributeFactory.<clinit>(AttributeFactory.java:45)
+TRACE 300407:
+	java.lang.invoke.MethodTypeForm.<init>(MethodTypeForm.java:142)
+	java.lang.invoke.MethodTypeForm.findForm(MethodTypeForm.java:259)
+	java.lang.invoke.MethodType.makeImpl(MethodType.java:283)
+TRACE 300411:
+	org.apache.lucene.util.AttributeFactory.<clinit>(AttributeFactory.java:53)
+	org.apache.lucene.util.AttributeSource.<clinit>(AttributeSource.java:48)
+	org.apache.lucene.document.Field.tokenStream(Field.java:543)
+TRACE 300417:
+	java.lang.invoke.MethodHandle.<clinit>(MethodHandle.java:1382)
+	java.lang.invoke.MethodHandles$Lookup.getDirectConstructor(MethodHandles.java:1427)
+	java.lang.invoke.MethodHandles$Lookup.findConstructor(MethodHandles.java:757)
+TRACE 300422:
+	java.lang.invoke.MethodType.fromMethodDescriptorString(MethodType.java:886)
+	java.lang.invoke.MemberName.getMethodType(MemberName.java:131)
+	java.lang.invoke.LambdaForm.computeInitialPreparedForms(LambdaForm.java:477)
+TRACE 300426:
+	java.lang.invoke.InvokerBytecodeGenerator.<init>(InvokerBytecodeGenerator.java:120)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCode(InvokerBytecodeGenerator.java:509)
+	java.lang.invoke.LambdaForm.compileToBytecode(LambdaForm.java:454)
+TRACE 300433:
+	com.sun.xml.internal.ws.org.objectweb.asm.MethodWriter.visitAnnotation(MethodWriter.java:512)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCodeBytes(InvokerBytecodeGenerator.java:520)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCode(InvokerBytecodeGenerator.java:510)
+TRACE 300438:
+	sun.misc.Unsafe.ensureClassInitialized(Unsafe.java:Unknown line)
+	java.lang.invoke.InvokerBytecodeGenerator.loadAndInitializeInvokerClass(InvokerBytecodeGenerator.java:263)
+	java.lang.invoke.InvokerBytecodeGenerator.loadMethod(InvokerBytecodeGenerator.java:250)
+TRACE 300442:
+	java.util.LinkedHashMap.newValueIterator(LinkedHashMap.java:418)
+	java.util.HashMap$Values.iterator(HashMap.java:1038)
+	org.apache.lucene.util.AttributeSource.getCurrentState(AttributeSource.java:263)
+TRACE 300443:
+	org.apache.lucene.analysis.standard.StandardTokenizer.init(StandardTokenizer.java:168)
+	org.apache.lucene.analysis.standard.StandardTokenizer.<init>(StandardTokenizer.java:147)
+	org.apache.lucene.analysis.standard.StandardAnalyzer.createComponents(StandardAnalyzer.java:124)
+TRACE 300444:
+	org.apache.lucene.analysis.util.CharacterUtils$Java5CharacterUtils.codePointAt(CharacterUtils.java:261)
+	org.apache.lucene.analysis.util.CharacterUtils.toLowerCase(CharacterUtils.java:140)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+TRACE 300446:
+	sun.reflect.AccessorGenerator.<clinit>(AccessorGenerator.java:674)
+	sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:46)
+	sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+TRACE 300454:
+	sun.reflect.MethodAccessorGenerator$1.run(MethodAccessorGenerator.java:399)
+	sun.reflect.MethodAccessorGenerator$1.run(MethodAccessorGenerator.java:396)
+	java.security.AccessController.doPrivileged(AccessController.java:Unknown line)
+TRACE 300457:
+	org.apache.lucene.analysis.tokenattributes.PackedTokenAttributeImpl.getPositionIncrement(PackedTokenAttributeImpl.java:61)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:627)
+	org.apache.lucene.index.DefaultIndexingChain.processField(DefaultIndexingChain.java:359)
+TRACE 300458:
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:62)
+	org.apache.lucene.analysis.util.FilteringTokenFilter.incrementToken(FilteringTokenFilter.java:90)
+TRACE 300459:
+	sun.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:180)
+	java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:569)
+	java.lang.reflect.Constructor.newInstance(Constructor.java:524)
+TRACE 300460:
+	org.apache.lucene.util.BytesRefHash.rehash(BytesRefHash.java:410)
+	org.apache.lucene.util.BytesRefHash.add(BytesRefHash.java:323)
+	org.apache.lucene.index.TermsHashPerField.add(TermsHashPerField.java:151)
+TRACE 300465:
+	com.mysql.jdbc.Field.getMysqlType(Field.java:627)
+	com.mysql.jdbc.ResultSetImpl.getStringInternal(ResultSetImpl.java:5819)
+	com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5689)
+TRACE 300466:
+	sun.nio.cs.UTF_8$Encoder.encodeArrayLoop(UTF_8.java:513)
+	sun.nio.cs.UTF_8$Encoder.encodeLoop(UTF_8.java:619)
+	java.nio.charset.CharsetEncoder.encode(CharsetEncoder.java:561)
+TRACE 300467:
+	com.mysql.jdbc.ResultSetImpl.checkColumnBounds(ResultSetImpl.java:819)
+	com.mysql.jdbc.ResultSetImpl.getStringInternal(ResultSetImpl.java:5770)
+	com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5689)
+TRACE 300468:
+	java.nio.Buffer.limit(Buffer.java:266)
+	java.nio.Buffer.<init>(Buffer.java:193)
+	java.nio.ByteBuffer.<init>(ByteBuffer.java:276)
+TRACE 300469:
+	java.lang.String.<init>(String.java:203)
+	java.lang.StringBuilder.toString(StringBuilder.java:405)
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:94)
+TRACE 300470:
+	sun.nio.cs.UTF_8$Encoder.encode(UTF_8.java:633)
+	java.util.zip.ZipCoder.getBytes(ZipCoder.java:86)
+	java.util.zip.ZipFile.getEntry(ZipFile.java:306)
+TRACE 300472:
+	sun.net.www.protocol.jar.Handler.parseContextSpec(Handler.java:206)
+	sun.net.www.protocol.jar.Handler.parseURL(Handler.java:152)
+	java.net.URL.<init>(URL.java:614)
+TRACE 300473:
+	java.lang.String.<init>(String.java:203)
+	java.lang.String.substring(String.java:1913)
+	sun.net.www.protocol.jar.Handler.parseURL(Handler.java:156)
+TRACE 300474:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:412)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+TRACE 300475:
+	org.apache.lucene.util.packed.BulkOperation.<clinit>(BulkOperation.java:27)
+	org.apache.lucene.util.packed.PackedWriter.<init>(PackedWriter.java:43)
+	org.apache.lucene.util.packed.PackedInts.getWriterNoHeader(PackedInts.java:1085)
+TRACE 300476:
+	org.apache.lucene.codecs.compressing.LZ4.readInt(LZ4.java:55)
+	org.apache.lucene.codecs.compressing.LZ4.compress(LZ4.java:234)
+	org.apache.lucene.codecs.compressing.CompressionMode$LZ4FastCompressor.compress(CompressionMode.java:161)
+TRACE 300477:
+	com.mysql.jdbc.ResultSetImpl.getStringInternal(ResultSetImpl.java:5768)
+	com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5689)
+	com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5729)
+TRACE 300480:
+	com.mysql.jdbc.ResultSetRow.getString(ResultSetRow.java:819)
+	com.mysql.jdbc.BufferRow.getString(BufferRow.java:542)
+	com.mysql.jdbc.ResultSetImpl.getStringInternal(ResultSetImpl.java:5812)
+TRACE 300481:
+	java.nio.Buffer.remaining(Buffer.java:383)
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:776)
+	java.nio.charset.Charset.decode(Charset.java:806)
+TRACE 300482:
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:91)
+	edu.ucla.cs.cs144.Indexer.main(Indexer.java:120)
+TRACE 300483:
+	java.nio.Buffer.flip(Buffer.java:349)
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:800)
+	java.nio.charset.Charset.decode(Charset.java:806)
+TRACE 300484:
+	org.apache.lucene.codecs.compressing.LZ4.compress(LZ4.java:230)
+	org.apache.lucene.codecs.compressing.CompressionMode$LZ4FastCompressor.compress(CompressionMode.java:161)
+	org.apache.lucene.codecs.compressing.CompressingStoredFieldsWriter.flush(CompressingStoredFieldsWriter.java:236)
+TRACE 300485:
+	com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:2156)
+	com.mysql.jdbc.PreparedStatement.executeQuery(PreparedStatement.java:2313)
+	edu.ucla.cs.cs144.Indexer.rebuildIndexes(Indexer.java:86)
+TRACE 300488:
+	org.apache.lucene.index.FieldInfo.omitsNorms(FieldInfo.java:278)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.finish(DefaultIndexingChain.java:575)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:324)
+TRACE 300489:
+	org.apache.lucene.index.FieldInfo.update(FieldInfo.java:190)
+	org.apache.lucene.index.FieldInfo.update(FieldInfo.java:176)
+	org.apache.lucene.index.DefaultIndexingChain.getOrAddField(DefaultIndexingChain.java:520)
+TRACE 300490:
+	java.util.ArrayList$Itr.next(ArrayList.java:831)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:317)
+	org.apache.lucene.index.DocumentsWriterPerThread.updateDocument(DocumentsWriterPerThread.java:239)
+TRACE 300491:
+	sun.nio.cs.UTF_8$Decoder.decodeLoop(UTF_8.java:353)
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:561)
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:783)
+TRACE 300492:
+	java.nio.CharBuffer.allocate(CharBuffer.java:329)
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:777)
+	java.nio.charset.Charset.decode(Charset.java:806)
+TRACE 300493:
+	java.util.TreeMap.<init>(TreeMap.java:160)
+	com.mysql.jdbc.ResultSetImpl.buildIndexMapping(ResultSetImpl.java:735)
+	com.mysql.jdbc.ResultSetImpl.findColumn(ResultSetImpl.java:1127)
+TRACE 300494:
+	com.mysql.jdbc.Field.getOriginalName(Field.java:662)
+	com.mysql.jdbc.ResultSetImpl.buildIndexMapping(ResultSetImpl.java:753)
+	com.mysql.jdbc.ResultSetImpl.findColumn(ResultSetImpl.java:1127)
+TRACE 300497:
+	org.apache.lucene.index.FieldInfo.update(FieldInfo.java:182)
+	org.apache.lucene.index.FieldInfo.update(FieldInfo.java:176)
+	org.apache.lucene.index.DefaultIndexingChain.getOrAddField(DefaultIndexingChain.java:520)
+TRACE 300498:
+	java.nio.Buffer.clear(Buffer.java:321)
+	sun.nio.cs.StreamEncoder.writeBytes(StreamEncoder.java:224)
+	sun.nio.cs.StreamEncoder.implFlushBuffer(StreamEncoder.java:291)
+TRACE 300499:
+	sun.misc.IoTrace.fileWriteBegin(IoTrace.java:156)
+	java.io.FileOutputStream.write(FileOutputStream.java:342)
+	java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
+TRACE 300501:
+	java.util.HashMap.addEntry(HashMap.java:884)
+	java.util.HashMap.put(HashMap.java:505)
+	com.mysql.jdbc.ResultSetImpl.findColumn(ResultSetImpl.java:1147)
+TRACE 300502:
+	com.mysql.jdbc.ResultSetImpl.buildIndexMapping(ResultSetImpl.java:734)
+	com.mysql.jdbc.ResultSetImpl.findColumn(ResultSetImpl.java:1127)
+	com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5729)
+TRACE 300503:
+	sun.misc.VM.isBooted(VM.java:165)
+	java.util.HashMap.initHashSeedAsNeeded(HashMap.java:338)
+	java.util.HashMap.inflateTable(HashMap.java:317)
+TRACE 300504:
+	org.apache.lucene.search.similarities.TFIDFSimilarity.computeNorm(TFIDFSimilarity.java:646)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.finish(DefaultIndexingChain.java:580)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:324)
+TRACE 300506:
+	org.apache.lucene.index.NumericDocValuesWriter.addValue(NumericDocValuesWriter.java:62)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.finish(DefaultIndexingChain.java:580)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:324)
+TRACE 300507:
+	org.apache.lucene.util.packed.PackedLongValues$Builder.add(PackedLongValues.java:229)
+	org.apache.lucene.index.NumericDocValuesWriter.addValue(NumericDocValuesWriter.java:62)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.finish(DefaultIndexingChain.java:580)
+TRACE 300508:
+	java.util.HashMap.clear(HashMap.java:734)
+	java.util.HashSet.clear(HashSet.java:241)
+	com.mysql.jdbc.StatementImpl.closeAllOpenResults(StatementImpl.java:605)
+TRACE 300509:
+	com.mysql.jdbc.Buffer.readLong(Buffer.java:365)
+	com.mysql.jdbc.MysqlIO.unpackField(MysqlIO.java:741)
+	com.mysql.jdbc.MysqlIO.getResultSet(MysqlIO.java:431)
+TRACE 300510:
+	java.lang.Float.floatToRawIntBits(Float.java:Unknown line)
+	org.apache.lucene.util.SmallFloat.floatToByte315(SmallFloat.java:79)
+	org.apache.lucene.search.similarities.DefaultSimilarity.encodeNormValue(DefaultSimilarity.java:87)
+TRACE 300515:
+	java.lang.Math.max(Math.java:816)
+	org.apache.lucene.util.packed.PackedLongValues$Builder.pack(PackedLongValues.java:258)
+	org.apache.lucene.util.packed.DeltaPackedLongValues$Builder.pack(DeltaPackedLongValues.java:89)
+TRACE 300516:
+	org.apache.lucene.util.AttributeSource.clearAttributes(AttributeSource.java:279)
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:194)
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+TRACE 300518:
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:618)
+	org.apache.lucene.index.DefaultIndexingChain.processField(DefaultIndexingChain.java:359)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:318)
+TRACE 300519:
+	java.util.WeakHashMap$HashIterator.hasNext(WeakHashMap.java:859)
+	org.apache.lucene.util.CloseableThreadLocal.purge(CloseableThreadLocal.java:113)
+	org.apache.lucene.util.CloseableThreadLocal.maybePurge(CloseableThreadLocal.java:105)
+TRACE 300529:
+	org.apache.lucene.search.similarities.TFIDFSimilarity.computeNorm(TFIDFSimilarity.java:645)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.finish(DefaultIndexingChain.java:580)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:324)
+TRACE 300533:
+	org.apache.lucene.index.TermsHashPerField.writeVInt(TermsHashPerField.java:221)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.addTerm(FreqProxTermsWriterPerField.java:158)
+	org.apache.lucene.index.TermsHashPerField.add(TermsHashPerField.java:185)
+TRACE 300534:
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+	org.apache.lucene.analysis.util.FilteringTokenFilter.incrementToken(FilteringTokenFilter.java:90)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:618)
+TRACE 300540:
+	java.lang.Character.toLowerCase(Character.java:6148)
+	org.apache.lucene.analysis.util.CharacterUtils.toLowerCase(CharacterUtils.java:140)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+TRACE 300541:
+	com.mysql.jdbc.RowDataStatic.size(RowDataStatic.java:259)
+	com.mysql.jdbc.ResultSetImpl.setRowPositionValidity(ResultSetImpl.java:862)
+	com.mysql.jdbc.ResultSetImpl.<init>(ResultSetImpl.java:505)
+TRACE 300545:
+	java.nio.charset.CharsetDecoder.decode(CharsetDecoder.java:783)
+	java.nio.charset.Charset.decode(Charset.java:806)
+	com.mysql.jdbc.StringUtils.toString(StringUtils.java:2017)
+TRACE 300546:
+	org.apache.lucene.analysis.ReusableStringReader.read(ReusableStringReader.java:47)
+	org.apache.lucene.analysis.standard.StandardTokenizerImpl.zzRefill(StandardTokenizerImpl.java:527)
+	org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken(StandardTokenizerImpl.java:738)
+TRACE 300547:
+	com.mysql.jdbc.RowDataStatic.size(RowDataStatic.java:259)
+	com.mysql.jdbc.ResultSetImpl.<init>(ResultSetImpl.java:475)
+	com.mysql.jdbc.JDBC4ResultSet.<init>(JDBC4ResultSet.java:55)
+TRACE 300548:
+	java.nio.Buffer.<init>(Buffer.java:193)
+	java.nio.CharBuffer.<init>(CharBuffer.java:276)
+	java.nio.HeapCharBuffer.<init>(HeapCharBuffer.java:70)
+TRACE 300549:
+	com.mysql.jdbc.ResultSetImpl.buildIndexMapping(ResultSetImpl.java:735)
+	com.mysql.jdbc.ResultSetImpl.findColumn(ResultSetImpl.java:1127)
+	com.mysql.jdbc.ResultSetImpl.getString(ResultSetImpl.java:5729)
+TRACE 300550:
+	org.apache.lucene.analysis.core.StopFilter.accept(StopFilter.java:162)
+	org.apache.lucene.analysis.util.FilteringTokenFilter.incrementToken(FilteringTokenFilter.java:91)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:618)
+TRACE 300551:
+	org.apache.lucene.analysis.util.CharacterUtils.toLowerCase(CharacterUtils.java:140)
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+	org.apache.lucene.analysis.util.FilteringTokenFilter.incrementToken(FilteringTokenFilter.java:90)
+TRACE 300552:
+	org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken(LowerCaseFilter.java:63)
+	org.apache.lucene.analysis.util.FilteringTokenFilter.incrementToken(FilteringTokenFilter.java:90)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:618)
+TRACE 300553:
+	org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken(StandardTokenizerImpl.java:738)
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:198)
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+TRACE 300554:
+	java.lang.Long.numberOfLeadingZeros(Long.java:1052)
+	org.apache.lucene.util.packed.PackedInts.unsignedBitsRequired(PackedInts.java:1152)
+	org.apache.lucene.util.packed.PackedInts.bitsRequired(PackedInts.java:1143)
+TRACE 300555:
+	org.apache.lucene.util.UnicodeUtil.UTF16toUTF8(UnicodeUtil.java:173)
+	org.apache.lucene.util.BytesRefBuilder.copyChars(BytesRefBuilder.java:156)
+	org.apache.lucene.analysis.tokenattributes.CharTermAttributeImpl.fillBytesRef(CharTermAttributeImpl.java:90)
+TRACE 300556:
+	org.apache.lucene.index.DefaultIndexingChain.finishStoredFields(DefaultIndexingChain.java:286)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:326)
+	org.apache.lucene.index.DocumentsWriterPerThread.updateDocument(DocumentsWriterPerThread.java:239)
+TRACE 300557:
+	org.apache.lucene.util.BytesRefHash.doHash(BytesRefHash.java:460)
+	org.apache.lucene.util.BytesRefHash.findHash(BytesRefHash.java:346)
+	org.apache.lucene.util.BytesRefHash.add(BytesRefHash.java:276)
+TRACE 300558:
+	org.apache.lucene.document.Field.stringValue(Field.java:259)
+	org.apache.lucene.document.Field.tokenStream(Field.java:537)
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:611)
+TRACE 300559:
+	org.apache.lucene.index.DefaultIndexingChain$PerField.invert(DefaultIndexingChain.java:613)
+	org.apache.lucene.index.DefaultIndexingChain.processField(DefaultIndexingChain.java:359)
+	org.apache.lucene.index.DefaultIndexingChain.processDocument(DefaultIndexingChain.java:318)
+TRACE 300560:
+	org.apache.lucene.analysis.util.CharArrayMap.getSlot(CharArrayMap.java:174)
+	org.apache.lucene.analysis.util.CharArrayMap.containsKey(CharArrayMap.java:136)
+	org.apache.lucene.analysis.util.CharArraySet.contains(CharArraySet.java:121)
+TRACE 300561:
+	org.apache.lucene.util.AttributeSource.clearAttributes(AttributeSource.java:278)
+	org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken(StandardTokenizer.java:194)
+	org.apache.lucene.analysis.standard.StandardFilter.incrementToken(StandardFilter.java:57)
+TRACE 300562:
+	org.apache.lucene.index.DocumentsWriterFlushQueue.addFlushTicket(DocumentsWriterFlushQueue.java:70)
+	org.apache.lucene.index.DocumentsWriter.doFlush(DocumentsWriter.java:504)
+	org.apache.lucene.index.DocumentsWriter.postUpdate(DocumentsWriter.java:375)
+TRACE 300563:
+	org.apache.lucene.index.PrefixCodedTerms$Builder.<init>(PrefixCodedTerms.java:103)
+	org.apache.lucene.index.FrozenBufferedUpdates.<init>(FrozenBufferedUpdates.java:72)
+	org.apache.lucene.index.DocumentsWriterDeleteQueue.freezeGlobalBuffer(DocumentsWriterDeleteQueue.java:233)
+TRACE 300566:
+	org.apache.lucene.index.NumericDocValuesWriter$1.iterator(NumericDocValuesWriter.java:96)
+	org.apache.lucene.codecs.lucene49.Lucene49NormsConsumer.addNumericField(Lucene49NormsConsumer.java:85)
+	org.apache.lucene.index.NumericDocValuesWriter.flush(NumericDocValuesWriter.java:92)
+TRACE 300567:
+	org.apache.lucene.util.packed.PackedLongValues$Iterator.next(PackedLongValues.java:153)
+	org.apache.lucene.index.NumericDocValuesWriter$NumericIterator.next(NumericDocValuesWriter.java:128)
+	org.apache.lucene.index.NumericDocValuesWriter$NumericIterator.next(NumericDocValuesWriter.java:102)
+TRACE 300568:
+	org.apache.lucene.codecs.compressing.CompressingStoredFieldsIndexWriter.writeBlock(CompressingStoredFieldsIndexWriter.java:125)
+	org.apache.lucene.codecs.compressing.CompressingStoredFieldsIndexWriter.finish(CompressingStoredFieldsIndexWriter.java:198)
+	org.apache.lucene.codecs.compressing.CompressingStoredFieldsWriter.finish(CompressingStoredFieldsWriter.java:325)
+TRACE 300569:
+	org.apache.lucene.codecs.perfield.PerFieldPostingsFormat$FieldsWriter.addField(PerFieldPostingsFormat.java:130)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:285)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+TRACE 300570:
+	org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.<clinit>(Lucene41PostingsWriter.java:78)
+	org.apache.lucene.codecs.lucene41.Lucene41PostingsFormat.fieldsConsumer(Lucene41PostingsFormat.java:415)
+	org.apache.lucene.codecs.perfield.PerFieldPostingsFormat$FieldsWriter.addField(PerFieldPostingsFormat.java:131)
+TRACE 300571:
+	org.apache.lucene.codecs.MultiLevelSkipListWriter.<init>(MultiLevelSkipListWriter.java:76)
+	org.apache.lucene.codecs.lucene41.Lucene41SkipWriter.<init>(Lucene41SkipWriter.java:70)
+	org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.<init>(Lucene41PostingsWriter.java:181)
+TRACE 300572:
+	org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare(BytesRef.java:242)
+	org.apache.lucene.util.BytesRefHash$1.comparePivot(BytesRefHash.java:194)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:71)
+TRACE 300574:
+	org.apache.lucene.util.fst.Builder.<clinit>(Builder.java:53)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$PendingBlock.compileIndex(BlockTreeTermsWriter.java:476)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.writeBlocks(BlockTreeTermsWriter.java:656)
+TRACE 300575:
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$PendingBlock.compileIndex(BlockTreeTermsWriter.java:491)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.writeBlocks(BlockTreeTermsWriter.java:656)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.pushTerm(BlockTreeTermsWriter.java:943)
+TRACE 300577:
+	org.apache.lucene.util.fst.BytesRefFSTEnum.<init>(BytesRefFSTEnum.java:33)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$PendingBlock.append(BlockTreeTermsWriter.java:516)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$PendingBlock.compileIndex(BlockTreeTermsWriter.java:494)
+TRACE 300578:
+	org.apache.lucene.store.RAMOutputStream.writeTo(RAMOutputStream.java:66)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.writeBlock(BlockTreeTermsWriter.java:747)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.writeBlocks(BlockTreeTermsWriter.java:625)
+TRACE 300579:
+	org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.finishTerm(Lucene41PostingsWriter.java:528)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.finishTerm(BlockTreeTermsWriter.java:908)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:495)
+TRACE 300582:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:335)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300583:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:379)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300584:
+	org.apache.lucene.util.fst.FST.readFirstRealTargetArc(FST.java:1010)
+	org.apache.lucene.util.fst.FST.readFirstTargetArc(FST.java:1000)
+	org.apache.lucene.util.fst.FSTEnum.pushFirst(FSTEnum.java:498)
+TRACE 300585:
+	org.apache.lucene.util.fst.FST.readNextRealArc(FST.java:1144)
+	org.apache.lucene.util.fst.FST.readFirstRealTargetArc(FST.java:1030)
+	org.apache.lucene.util.fst.FST.readFirstTargetArc(FST.java:1000)
+TRACE 300586:
+	org.apache.lucene.util.fst.FST$Arc.isLast(FST.java:242)
+	org.apache.lucene.util.fst.FSTEnum.doNext(FSTEnum.java:101)
+	org.apache.lucene.util.fst.BytesRefFSTEnum.next(BytesRefFSTEnum.java:57)
+TRACE 300587:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:382)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300588:
+	java.util.Arrays.copyOf(Arrays.java:2219)
+	java.util.ArrayList.grow(ArrayList.java:242)
+	java.util.ArrayList.ensureExplicitCapacity(ArrayList.java:216)
+TRACE 300589:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:279)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300590:
+	org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare(BytesRef.java:242)
+	org.apache.lucene.util.BytesRefHash$1.compare(BytesRefHash.java:179)
+	org.apache.lucene.util.Sorter.siftDown(Sorter.java:242)
+TRACE 300591:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:340)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300592:
+	org.apache.lucene.util.fst.BytesRefFSTEnum.setResult(BytesRefFSTEnum.java:118)
+	org.apache.lucene.util.fst.BytesRefFSTEnum.next(BytesRefFSTEnum.java:58)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$PendingBlock.append(BlockTreeTermsWriter.java:518)
+TRACE 300593:
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.pushTerm(BlockTreeTermsWriter.java:954)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.finishTerm(BlockTreeTermsWriter.java:912)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:495)
+TRACE 300594:
+	org.apache.lucene.util.BytesRefHash$1.comparePivot(BytesRefHash.java:193)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:71)
+	org.apache.lucene.util.IntroSorter.sort(IntroSorter.java:41)
+TRACE 300596:
+	org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare(BytesRef.java:242)
+	org.apache.lucene.util.BytesRefHash$1.compare(BytesRefHash.java:179)
+	org.apache.lucene.util.Sorter.insertionSort(Sorter.java:169)
+TRACE 300597:
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:80)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:87)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:88)
+TRACE 300598:
+	org.apache.lucene.util.BytesRefHash$1.comparePivot(BytesRefHash.java:193)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:75)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:87)
+TRACE 300599:
+	org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare(BytesRef.java:262)
+	org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare(BytesRef.java:242)
+	org.apache.lucene.util.BytesRefHash$1.comparePivot(BytesRefHash.java:194)
+TRACE 300600:
+	org.apache.lucene.util.BytesRefHash$1.comparePivot(BytesRefHash.java:193)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:75)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:88)
+TRACE 300601:
+	org.apache.lucene.util.Sorter.insertionSort(Sorter.java:170)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:46)
+	org.apache.lucene.util.IntroSorter.quicksort(IntroSorter.java:87)
+TRACE 300602:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:494)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300604:
+	org.apache.lucene.util.packed.BulkOperationPacked.encode(BulkOperationPacked.java:250)
+	org.apache.lucene.codecs.lucene41.ForUtil.writeBlock(ForUtil.java:184)
+	org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.startDoc(Lucene41PostingsWriter.java:315)
+TRACE 300607:
+	org.apache.lucene.store.DataInput.readVInt(DataInput.java:122)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:393)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+TRACE 300608:
+	org.apache.lucene.codecs.lucene41.ForUtil.bitsRequired(ForUtil.java:249)
+	org.apache.lucene.codecs.lucene41.ForUtil.writeBlock(ForUtil.java:174)
+	org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.startDoc(Lucene41PostingsWriter.java:315)
+TRACE 300609:
+	org.apache.lucene.store.DataOutput.writeVInt(DataOutput.java:196)
+	org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.finishTerm(Lucene41PostingsWriter.java:500)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.finishTerm(BlockTreeTermsWriter.java:908)
+TRACE 300610:
+	org.apache.lucene.util.fst.BytesStore$2.<init>(BytesStore.java:425)
+	org.apache.lucene.util.fst.BytesStore.getReverseReader(BytesStore.java:424)
+	org.apache.lucene.util.fst.Builder.<init>(Builder.java:157)
+TRACE 300611:
+	org.apache.lucene.util.packed.AbstractPagedMutable.<init>(AbstractPagedMutable.java:42)
+	org.apache.lucene.util.packed.PagedGrowableWriter.<init>(PagedGrowableWriter.java:49)
+	org.apache.lucene.util.packed.PagedGrowableWriter.<init>(PagedGrowableWriter.java:45)
+TRACE 300612:
+	org.apache.lucene.util.fst.FST.readRootArcs(FST.java:483)
+	org.apache.lucene.util.fst.FST.cacheRootArcs(FST.java:475)
+	org.apache.lucene.util.fst.FST.finish(FST.java:458)
+TRACE 300613:
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter.encodeOutput(BlockTreeTermsWriter.java:377)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$PendingBlock.compileIndex(BlockTreeTermsWriter.java:460)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.writeBlocks(BlockTreeTermsWriter.java:656)
+TRACE 300614:
+	org.apache.lucene.util.packed.BulkOperation.writeLong(BulkOperation.java:145)
+	org.apache.lucene.util.packed.BulkOperationPackedSingleBlock.encode(BulkOperationPackedSingleBlock.java:179)
+	org.apache.lucene.codecs.lucene41.ForUtil.writeBlock(ForUtil.java:184)
+TRACE 300615:
+	org.apache.lucene.store.OutputStreamIndexOutput.writeBytes(OutputStreamIndexOutput.java:51)
+	org.apache.lucene.store.DataOutput.writeBytes(DataOutput.java:53)
+	org.apache.lucene.codecs.lucene41.ForUtil.writeBlock(ForUtil.java:185)
+TRACE 300616:
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.pushTerm(BlockTreeTermsWriter.java:930)
+	org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.finishTerm(BlockTreeTermsWriter.java:912)
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:495)
+TRACE 300617:
+	org.apache.lucene.index.FreqProxTermsWriterPerField.flush(FreqProxTermsWriterPerField.java:488)
+	org.apache.lucene.index.FreqProxTermsWriter.flush(FreqProxTermsWriter.java:80)
+	org.apache.lucene.index.DefaultIndexingChain.flush(DefaultIndexingChain.java:114)
+TRACE 300618:
+	java.util.Arrays.binarySearch0(Arrays.java:952)
+	java.util.Arrays.binarySearch(Arrays.java:908)
+	org.apache.lucene.util.packed.Packed64SingleBlock.isSupported(Packed64SingleBlock.java:39)
+TRACE 300619:
+	org.apache.lucene.index.DocumentsWriterPerThread.sealFlushedSegment(DocumentsWriterPerThread.java:509)
+	org.apache.lucene.index.DocumentsWriterPerThread.flush(DocumentsWriterPerThread.java:476)
+	org.apache.lucene.index.DocumentsWriter.doFlush(DocumentsWriter.java:510)
+TRACE 300620:
+	org.apache.lucene.store.CompoundFileWriter.createOutput(CompoundFileWriter.java:244)
+	org.apache.lucene.store.CompoundFileDirectory.createOutput(CompoundFileDirectory.java:350)
+	org.apache.lucene.store.Directory.copy(Directory.java:192)
+TRACE 300622:
+	java.util.zip.CRC32.updateBytes(CRC32.java:Unknown line)
+	java.util.zip.CRC32.update(CRC32.java:65)
+	java.util.zip.CheckedOutputStream.write(CheckedOutputStream.java:74)
+TRACE 300623:
+	java.io.UnixFileSystem.getLength(UnixFileSystem.java:Unknown line)
+	java.io.File.length(File.java:968)
+	org.apache.lucene.store.FSDirectory.fileLength(FSDirectory.java:258)
+TRACE 300624:
+	java.util.Collections.singletonIterator(Collections.java:3300)
+	java.util.Collections$SingletonSet.iterator(Collections.java:3332)
+	org.apache.lucene.index.SegmentInfo.checkFileNames(SegmentInfo.java:277)
+TRACE 300626:
+	org.apache.lucene.index.TieredMergePolicy.findMerges(TieredMergePolicy.java:292)
+	org.apache.lucene.index.IndexWriter.updatePendingMerges(IndexWriter.java:2005)
+	org.apache.lucene.index.IndexWriter.maybeMerge(IndexWriter.java:1969)
+TRACE 300630:
+	org.apache.lucene.index.BufferedUpdatesStream.applyDeletesAndUpdates(BufferedUpdatesStream.java:169)
+	org.apache.lucene.index.IndexWriter.applyAllDeletesAndUpdates(IndexWriter.java:3271)
+	org.apache.lucene.index.IndexWriter.maybeApplyDeletes(IndexWriter.java:3262)
+TRACE 300632:
+	java.lang.ClassLoader.loadClass(ClassLoader.java:437)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:412)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:308)
+CPU SAMPLES BEGIN (total = 3480) Fri Feb  6 16:39:59 2015
+rank   self  accum   count trace method
+   1 54.74% 54.74%    1905 300365 java.net.SocketOutputStream.socketWrite0
+   2 11.09% 65.83%     386 300462 java.io.FileOutputStream.writeBytes
+   3  4.97% 70.80%     173 300373 java.net.PlainSocketImpl.socketAvailable
+   4  4.45% 75.26%     155 300511 com.mysql.jdbc.MysqlIO.sendCommand
+   5  2.04% 77.30%      71 300367 java.net.SocketInputStream.socketRead0
+   6  1.55% 78.85%      54 300513 com.mysql.jdbc.PreparedStatement.executeInternal
+   7  1.52% 80.37%      53 300500 com.mysql.jdbc.MysqlIO.reuseAndReadPacket
+   8  1.15% 81.52%      40 300525 java.io.FileOutputStream.writeBytes
+   9  0.98% 82.50%      34 300522 com.mysql.jdbc.MysqlIO.getResultSet
+  10  0.95% 83.45%      33 300487 com.mysql.jdbc.MysqlIO.reuseAndReadPacket
+  11  0.95% 84.40%      33 300631 sun.nio.ch.FileDispatcherImpl.force0
+  12  0.89% 85.29%      31 300079 java.lang.ClassLoader.defineClass1
+  13  0.63% 85.92%      22 300080 java.lang.ClassLoader.findBootstrapClass
+  14  0.52% 86.44%      18 300464 java.lang.System.currentTimeMillis
+  15  0.43% 86.87%      15 300048 java.util.zip.ZipFile.read
+  16  0.37% 87.24%      13 300625 java.io.UnixFileSystem.delete0
+  17  0.29% 87.53%      10 300137 java.lang.ClassLoader$NativeLibrary.load
+  18  0.29% 87.82%      10 300521 org.apache.lucene.util.BytesRefHash.equals
+  19  0.26% 88.07%       9 300526 java.lang.Character.codePointAt
+  20  0.23% 88.30%       8 300034 java.util.zip.ZipFile.open
+  21  0.23% 88.53%       8 300496 org.apache.lucene.index.TermsHashPerField.writeVInt
+  22  0.20% 88.74%       7 300368 java.lang.System.currentTimeMillis
+  23  0.20% 88.94%       7 300486 java.lang.Character.codePointAt
+  24  0.20% 89.14%       7 300528 org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken
+  25  0.17% 89.31%       6 300538 java.lang.Character.toLowerCase
+  26  0.17% 89.48%       6 300621 sun.nio.ch.FileDispatcherImpl.pread0
+  27  0.14% 89.63%       5 300114 java.io.UnixFileSystem.getBooleanAttributes0
+  28  0.14% 89.77%       5 300277 java.security.AccessController.doPrivileged
+  29  0.14% 89.91%       5 300463 java.lang.AbstractStringBuilder.ensureCapacityInternal
+  30  0.14% 90.06%       5 300478 java.lang.System.currentTimeMillis
+  31  0.14% 90.20%       5 300495 java.lang.System.currentTimeMillis
+  32  0.14% 90.34%       5 300524 org.apache.lucene.util.BytesRefBuilder.grow
+  33  0.11% 90.46%       4 300169 com.mysql.jdbc.NonRegisteringDriver.connect
+  34  0.11% 90.57%       4 300172 java.lang.System.nanoTime
+  35  0.11% 90.69%       4 300370 com.mysql.jdbc.util.ReadAheadInputStream.read
+  36  0.11% 90.80%       4 300531 org.apache.lucene.analysis.util.CharArrayMap.getHashCode
+  37  0.11% 90.92%       4 300605 org.apache.lucene.store.DataInput.readVInt
+  38  0.09% 91.01%       3 300119 java.lang.Class.getDeclaredMethods0
+  39  0.09% 91.09%       3 300149 java.lang.System.nanoTime
+  40  0.09% 91.18%       3 300274 java.lang.System.nanoTime
+  41  0.09% 91.26%       3 300281 java.lang.Class.getDeclaredConstructors0
+  42  0.09% 91.35%       3 300372 com.mysql.jdbc.MysqlIO.nextRowFast
+  43  0.09% 91.44%       3 300471 java.lang.ClassLoader.loadClass
+  44  0.09% 91.52%       3 300520 org.apache.lucene.util.StringHelper.murmurhash3_x86_32
+  45  0.09% 91.61%       3 300527 org.apache.lucene.index.TermsHashPerField.writeVInt
+  46  0.09% 91.70%       3 300535 org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken
+  47  0.09% 91.78%       3 300539 org.apache.lucene.analysis.util.CharArrayMap.getSlot
+  48  0.09% 91.87%       3 300544 org.apache.lucene.analysis.util.CharacterUtils.toLowerCase
+  49  0.09% 91.95%       3 300573 org.apache.lucene.util.BytesRefHash$1.comparePivot
+  50  0.06% 92.01%       2 300015 java.lang.Class.forName0
+  51  0.06% 92.07%       2 300066 java.io.FileInputStream.open
+  52  0.06% 92.13%       2 300201 com.mysql.jdbc.ConnectionImpl.coreConnect
+  53  0.06% 92.18%       2 300253 com.mysql.jdbc.MysqlIO.buildResultSetWithRows
+  54  0.06% 92.24%       2 300304 java.lang.System.nanoTime
+  55  0.06% 92.30%       2 300415 java.lang.System.nanoTime
+  56  0.06% 92.36%       2 300479 org.apache.lucene.util.ByteBlockPool$DirectTrackingAllocator.getByteBlock
+  57  0.06% 92.41%       2 300505 java.lang.Object.notifyAll
+  58  0.06% 92.47%       2 300512 org.apache.lucene.analysis.util.CharArrayMap.getSlot
+  59  0.06% 92.53%       2 300514 org.apache.lucene.util.StringHelper.murmurhash3_x86_32
+  60  0.06% 92.59%       2 300517 org.apache.lucene.index.TermsHashPerField.writeVInt
+  61  0.06% 92.64%       2 300523 org.apache.lucene.analysis.standard.StandardTokenizer.incrementToken
+  62  0.06% 92.70%       2 300530 org.apache.lucene.index.TermsHashPerField.writeVInt
+  63  0.06% 92.76%       2 300532 org.apache.lucene.util.BytesRefHash.rehash
+  64  0.06% 92.82%       2 300536 org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken
+  65  0.06% 92.87%       2 300537 org.apache.lucene.analysis.util.CharacterUtils.toLowerCase
+  66  0.06% 92.93%       2 300542 org.apache.lucene.util.BytesRefHash.add
+  67  0.06% 92.99%       2 300543 org.apache.lucene.util.BytesRefHash.equals
+  68  0.06% 93.05%       2 300580 org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.finishTerm
+  69  0.06% 93.10%       2 300581 org.apache.lucene.util.fst.BytesStore.writeByte
+  70  0.06% 93.16%       2 300595 org.apache.lucene.util.BytesRefHash$1.comparePivot
+  71  0.06% 93.22%       2 300603 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+  72  0.06% 93.28%       2 300606 org.apache.lucene.store.DataInput.readVInt
+  73  0.03% 93.30%       1 300002 java.net.URLClassLoader$1.run
+  74  0.03% 93.33%       1 300008 sun.misc.URLClassPath$Loader.<init>
+  75  0.03% 93.36%       1 300021 sun.misc.PerfCounter.getZipFileOpenTime
+  76  0.03% 93.39%       1 300026 java.lang.String.charAt
+  77  0.03% 93.42%       1 300036 java.util.zip.Inflater.init
+  78  0.03% 93.45%       1 300040 java.util.jar.Manifest.read
+  79  0.03% 93.48%       1 300043 java.util.jar.JarFile.getManifestFromReference
+  80  0.03% 93.51%       1 300049 sun.misc.ASCIICaseInsensitiveComparator.lowerCaseHashCode
+  81  0.03% 93.53%       1 300053 java.nio.HeapByteBuffer.<init>
+  82  0.03% 93.56%       1 300061 java.lang.System.nanoTime
+  83  0.03% 93.59%       1 300062 java.lang.System.nanoTime
+  84  0.03% 93.62%       1 300072 sun.net.www.MessageHeader.grow
+  85  0.03% 93.65%       1 300078 java.security.BasicPermission.newPermissionCollection
+  86  0.03% 93.68%       1 300084 sun.security.util.ManifestEntryVerifier.<init>
+  87  0.03% 93.71%       1 300086 com.mysql.jdbc.NonRegisteringDriver.<clinit>
+  88  0.03% 93.74%       1 300092 java.util.ServiceLoader.iterator
+  89  0.03% 93.76%       1 300098 sun.nio.cs.UTF_8$Decoder.decodeArrayLoop
+  90  0.03% 93.79%       1 300101 java.util.HashMap.getEntry
+  91  0.03% 93.82%       1 300108 sun.net.www.protocol.jar.Handler.openConnection
+  92  0.03% 93.85%       1 300118 com.mysql.jdbc.NonRegisteringDriver.connect
+  93  0.03% 93.88%       1 300123 sun.util.calendar.ZoneInfo.getTimeZone
+  94  0.03% 93.91%       1 300132 java.lang.Class.forName0
+  95  0.03% 93.94%       1 300136 sun.nio.fs.UnixNativeDispatcher.<clinit>
+  96  0.03% 93.97%       1 300139 java.nio.file.FileSystems$DefaultFileSystemHolder.defaultFileSystem
+  97  0.03% 93.99%       1 300146 sun.nio.fs.NativeBuffer.<init>
+  98  0.03% 94.02%       1 300155 java.util.ResourceBundle$CacheKey.<init>
+  99  0.03% 94.05%       1 300160 java.util.Properties$LineReader.readLine
+ 100  0.03% 94.08%       1 300162 java.lang.ThreadLocal$ThreadLocalMap.getEntry
+ 101  0.03% 94.11%       1 300163 com.mysql.jdbc.Util.stackTraceToString
+ 102  0.03% 94.14%       1 300168 sun.misc.URLClassPath$JarLoader.getResource
+ 103  0.03% 94.17%       1 300170 java.lang.Class.getDeclaredFields0
+ 104  0.03% 94.20%       1 300177 java.text.MessageFormat.subformat
+ 105  0.03% 94.22%       1 300180 java.util.Collections$UnmodifiableMap.<init>
+ 106  0.03% 94.25%       1 300184 java.lang.String.toUpperCase
+ 107  0.03% 94.28%       1 300186 java.util.StringTokenizer.countTokens
+ 108  0.03% 94.31%       1 300187 java.util.Calendar.setWeekCountData
+ 109  0.03% 94.34%       1 300194 sun.util.calendar.Gregorian.newCalendarDate
+ 110  0.03% 94.37%       1 300198 com.mysql.jdbc.ConnectionImpl.getMetaData
+ 111  0.03% 94.40%       1 300199 java.util.TreeMap.navigableKeySet
+ 112  0.03% 94.43%       1 300202 java.lang.Class.forName0
+ 113  0.03% 94.45%       1 300209 java.net.InetAddressImplFactory.create
+ 114  0.03% 94.48%       1 300224 java.net.Inet6Address.<clinit>
+ 115  0.03% 94.51%       1 300226 java.lang.Class.getDeclaredFields0
+ 116  0.03% 94.54%       1 300227 java.net.Socket.setImpl
+ 117  0.03% 94.57%       1 300234 sun.net.spi.DefaultProxySelector.select
+ 118  0.03% 94.60%       1 300240 java.net.AbstractPlainSocketImpl.getInputStream
+ 119  0.03% 94.63%       1 300247 com.mysql.jdbc.MysqlIO.loadAuthenticationPlugins
+ 120  0.03% 94.66%       1 300249 com.mysql.jdbc.SingleByteCharsetConverter.<clinit>
+ 121  0.03% 94.68%       1 300250 com.mysql.jdbc.SingleByteCharsetConverter.<clinit>
+ 122  0.03% 94.71%       1 300251 com.mysql.jdbc.ConnectionImpl.createStatement
+ 123  0.03% 94.74%       1 300252 com.mysql.jdbc.StatementImpl.<init>
+ 124  0.03% 94.77%       1 300257 java.lang.Math.getExponent
+ 125  0.03% 94.80%       1 300259 java.nio.HeapCharBuffer.toString
+ 126  0.03% 94.83%       1 300265 java.lang.System.nanoTime
+ 127  0.03% 94.86%       1 300266 java.util.zip.ZipCoder.getBytes
+ 128  0.03% 94.89%       1 300267 sun.reflect.UnsafeFieldAccessorFactory.newFieldAccessor
+ 129  0.03% 94.91%       1 300270 org.apache.lucene.util.Constants.<clinit>
+ 130  0.03% 94.94%       1 300271 edu.ucla.cs.cs144.Indexer.rebuildIndexes
+ 131  0.03% 94.97%       1 300272 java.net.URL.<init>
+ 132  0.03% 95.00%       1 300273 java.nio.DirectLongBufferU.ix
+ 133  0.03% 95.03%       1 300276 java.lang.System.getSecurityManager
+ 134  0.03% 95.06%       1 300278 org.apache.lucene.codecs.Codec.<clinit>
+ 135  0.03% 95.09%       1 300280 org.apache.lucene.util.SPIClassIterator.loadNextProfile
+ 136  0.03% 95.11%       1 300282 org.apache.lucene.codecs.lucene40.Lucene40Codec.<init>
+ 137  0.03% 95.14%       1 300283 org.apache.lucene.codecs.lucene3x.Lucene3xSegmentInfoFormat.<init>
+ 138  0.03% 95.17%       1 300284 sun.reflect.NativeConstructorAccessorImpl.newInstance0
+ 139  0.03% 95.20%       1 300285 java.util.zip.InflaterInputStream.read
+ 140  0.03% 95.23%       1 300286 edu.ucla.cs.cs144.Indexer.rebuildIndexes
+ 141  0.03% 95.26%       1 300287 java.nio.channels.FileChannel.<clinit>
+ 142  0.03% 95.29%       1 300296 sun.nio.ch.FileChannelImpl.<init>
+ 143  0.03% 95.32%       1 300309 java.util.zip.CRC32.updateBytes
+ 144  0.03% 95.34%       1 300313 java.util.regex.Pattern.newSingle
+ 145  0.03% 95.37%       1 300322 java.util.regex.Pattern.group0
+ 146  0.03% 95.40%       1 300328 org.apache.lucene.codecs.lucene46.Lucene46SegmentInfoReader.read
+ 147  0.03% 95.43%       1 300330 org.apache.lucene.index.IndexWriter.<init>
+ 148  0.03% 95.46%       1 300332 java.util.EnumSet.noneOf
+ 149  0.03% 95.49%       1 300334 java.util.Collections.singleton
+ 150  0.03% 95.52%       1 300345 java.lang.management.PlatformComponent.<clinit>
+ 151  0.03% 95.55%       1 300355 sun.management.Flag.initialize
+ 152  0.03% 95.57%       1 300356 org.apache.lucene.index.DocumentsWriter.<init>
+ 153  0.03% 95.60%       1 300357 org.apache.lucene.index.IndexWriter.<init>
+ 154  0.03% 95.63%       1 300359 java.util.HashMap$Values.<init>
+ 155  0.03% 95.66%       1 300361 java.util.Collections$UnmodifiableMap.entrySet
+ 156  0.03% 95.69%       1 300364 com.mysql.jdbc.ConnectionImpl.clientPrepareStatement
+ 157  0.03% 95.72%       1 300366 com.mysql.jdbc.util.ReadAheadInputStream.readFromUnderlyingStreamIfNecessary
+ 158  0.03% 95.75%       1 300369 com.mysql.jdbc.MysqlIO.reuseAndReadPacket
+ 159  0.03% 95.78%       1 300371 com.mysql.jdbc.Buffer.setBufLength
+ 160  0.03% 95.80%       1 300374 com.mysql.jdbc.MysqlIO.nextRow
+ 161  0.03% 95.83%       1 300375 com.mysql.jdbc.Buffer.<init>
+ 162  0.03% 95.86%       1 300376 edu.ucla.cs.cs144.Indexer.rebuildIndexes
+ 163  0.03% 95.89%       1 300377 edu.ucla.cs.cs144.Indexer.rebuildIndexes
+ 164  0.03% 95.92%       1 300378 sun.misc.Resource.getBytes
+ 165  0.03% 95.95%       1 300385 sun.util.LocaleServiceProviderPool.<init>
+ 166  0.03% 95.98%       1 300392 java.util.Currency.readIntArray
+ 167  0.03% 96.01%       1 300395 java.util.concurrent.locks.ReentrantLock$Sync.nonfairTryAcquire
+ 168  0.03% 96.03%       1 300396 org.apache.lucene.codecs.compressing.CompressingStoredFieldsWriter.<init>
+ 169  0.03% 96.06%       1 300397 java.lang.System.nanoTime
+ 170  0.03% 96.09%       1 300398 org.apache.lucene.index.TermsHashPerField.<init>
+ 171  0.03% 96.12%       1 300399 java.lang.String.concat
+ 172  0.03% 96.15%       1 300400 java.lang.invoke.MemberName.getFactory
+ 173  0.03% 96.18%       1 300407 java.lang.invoke.MethodTypeForm.<init>
+ 174  0.03% 96.21%       1 300411 org.apache.lucene.util.AttributeFactory.<clinit>
+ 175  0.03% 96.24%       1 300417 java.lang.invoke.MethodHandle.<clinit>
+ 176  0.03% 96.26%       1 300422 java.lang.invoke.MethodType.fromMethodDescriptorString
+ 177  0.03% 96.29%       1 300426 java.lang.invoke.InvokerBytecodeGenerator.<init>
+ 178  0.03% 96.32%       1 300433 com.sun.xml.internal.ws.org.objectweb.asm.MethodWriter.visitAnnotation
+ 179  0.03% 96.35%       1 300438 sun.misc.Unsafe.ensureClassInitialized
+ 180  0.03% 96.38%       1 300442 java.util.LinkedHashMap.newValueIterator
+ 181  0.03% 96.41%       1 300443 org.apache.lucene.analysis.standard.StandardTokenizer.init
+ 182  0.03% 96.44%       1 300444 org.apache.lucene.analysis.util.CharacterUtils$Java5CharacterUtils.codePointAt
+ 183  0.03% 96.47%       1 300446 sun.reflect.AccessorGenerator.<clinit>
+ 184  0.03% 96.49%       1 300454 sun.reflect.MethodAccessorGenerator$1.run
+ 185  0.03% 96.52%       1 300457 org.apache.lucene.analysis.tokenattributes.PackedTokenAttributeImpl.getPositionIncrement
+ 186  0.03% 96.55%       1 300458 org.apache.lucene.analysis.standard.StandardFilter.incrementToken
+ 187  0.03% 96.58%       1 300459 sun.reflect.ReflectionFactory.newConstructorAccessor
+ 188  0.03% 96.61%       1 300460 org.apache.lucene.util.BytesRefHash.rehash
+ 189  0.03% 96.64%       1 300465 com.mysql.jdbc.Field.getMysqlType
+ 190  0.03% 96.67%       1 300466 sun.nio.cs.UTF_8$Encoder.encodeArrayLoop
+ 191  0.03% 96.70%       1 300467 com.mysql.jdbc.ResultSetImpl.checkColumnBounds
+ 192  0.03% 96.72%       1 300468 java.nio.Buffer.limit
+ 193  0.03% 96.75%       1 300469 java.lang.String.<init>
+ 194  0.03% 96.78%       1 300470 sun.nio.cs.UTF_8$Encoder.encode
+ 195  0.03% 96.81%       1 300472 sun.net.www.protocol.jar.Handler.parseContextSpec
+ 196  0.03% 96.84%       1 300473 java.lang.String.<init>
+ 197  0.03% 96.87%       1 300474 java.lang.ClassLoader.loadClass
+ 198  0.03% 96.90%       1 300475 org.apache.lucene.util.packed.BulkOperation.<clinit>
+ 199  0.03% 96.93%       1 300476 org.apache.lucene.codecs.compressing.LZ4.readInt
+ 200  0.03% 96.95%       1 300477 com.mysql.jdbc.ResultSetImpl.getStringInternal
+ 201  0.03% 96.98%       1 300480 com.mysql.jdbc.ResultSetRow.getString
+ 202  0.03% 97.01%       1 300481 java.nio.Buffer.remaining
+ 203  0.03% 97.04%       1 300482 edu.ucla.cs.cs144.Indexer.rebuildIndexes
+ 204  0.03% 97.07%       1 300483 java.nio.Buffer.flip
+ 205  0.03% 97.10%       1 300484 org.apache.lucene.codecs.compressing.LZ4.compress
+ 206  0.03% 97.13%       1 300485 com.mysql.jdbc.PreparedStatement.executeInternal
+ 207  0.03% 97.16%       1 300488 org.apache.lucene.index.FieldInfo.omitsNorms
+ 208  0.03% 97.18%       1 300489 org.apache.lucene.index.FieldInfo.update
+ 209  0.03% 97.21%       1 300490 java.util.ArrayList$Itr.next
+ 210  0.03% 97.24%       1 300491 sun.nio.cs.UTF_8$Decoder.decodeLoop
+ 211  0.03% 97.27%       1 300492 java.nio.CharBuffer.allocate
+ 212  0.03% 97.30%       1 300493 java.util.TreeMap.<init>
+ 213  0.03% 97.33%       1 300494 com.mysql.jdbc.Field.getOriginalName
+ 214  0.03% 97.36%       1 300497 org.apache.lucene.index.FieldInfo.update
+ 215  0.03% 97.39%       1 300498 java.nio.Buffer.clear
+ 216  0.03% 97.41%       1 300499 sun.misc.IoTrace.fileWriteBegin
+ 217  0.03% 97.44%       1 300501 java.util.HashMap.addEntry
+ 218  0.03% 97.47%       1 300502 com.mysql.jdbc.ResultSetImpl.buildIndexMapping
+ 219  0.03% 97.50%       1 300503 sun.misc.VM.isBooted
+ 220  0.03% 97.53%       1 300504 org.apache.lucene.search.similarities.TFIDFSimilarity.computeNorm
+ 221  0.03% 97.56%       1 300506 org.apache.lucene.index.NumericDocValuesWriter.addValue
+ 222  0.03% 97.59%       1 300507 org.apache.lucene.util.packed.PackedLongValues$Builder.add
+ 223  0.03% 97.61%       1 300508 java.util.HashMap.clear
+ 224  0.03% 97.64%       1 300509 com.mysql.jdbc.Buffer.readLong
+ 225  0.03% 97.67%       1 300510 java.lang.Float.floatToRawIntBits
+ 226  0.03% 97.70%       1 300515 java.lang.Math.max
+ 227  0.03% 97.73%       1 300516 org.apache.lucene.util.AttributeSource.clearAttributes
+ 228  0.03% 97.76%       1 300518 org.apache.lucene.index.DefaultIndexingChain$PerField.invert
+ 229  0.03% 97.79%       1 300519 java.util.WeakHashMap$HashIterator.hasNext
+ 230  0.03% 97.82%       1 300529 org.apache.lucene.search.similarities.TFIDFSimilarity.computeNorm
+ 231  0.03% 97.84%       1 300533 org.apache.lucene.index.TermsHashPerField.writeVInt
+ 232  0.03% 97.87%       1 300534 org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken
+ 233  0.03% 97.90%       1 300540 java.lang.Character.toLowerCase
+ 234  0.03% 97.93%       1 300541 com.mysql.jdbc.RowDataStatic.size
+ 235  0.03% 97.96%       1 300545 java.nio.charset.CharsetDecoder.decode
+ 236  0.03% 97.99%       1 300546 org.apache.lucene.analysis.ReusableStringReader.read
+ 237  0.03% 98.02%       1 300547 com.mysql.jdbc.RowDataStatic.size
+ 238  0.03% 98.05%       1 300548 java.nio.Buffer.<init>
+ 239  0.03% 98.07%       1 300549 com.mysql.jdbc.ResultSetImpl.buildIndexMapping
+ 240  0.03% 98.10%       1 300550 org.apache.lucene.analysis.core.StopFilter.accept
+ 241  0.03% 98.13%       1 300551 org.apache.lucene.analysis.util.CharacterUtils.toLowerCase
+ 242  0.03% 98.16%       1 300552 org.apache.lucene.analysis.core.LowerCaseFilter.incrementToken
+ 243  0.03% 98.19%       1 300553 org.apache.lucene.analysis.standard.StandardTokenizerImpl.getNextToken
+ 244  0.03% 98.22%       1 300554 java.lang.Long.numberOfLeadingZeros
+ 245  0.03% 98.25%       1 300555 org.apache.lucene.util.UnicodeUtil.UTF16toUTF8
+ 246  0.03% 98.28%       1 300556 org.apache.lucene.index.DefaultIndexingChain.finishStoredFields
+ 247  0.03% 98.30%       1 300557 org.apache.lucene.util.BytesRefHash.doHash
+ 248  0.03% 98.33%       1 300558 org.apache.lucene.document.Field.stringValue
+ 249  0.03% 98.36%       1 300559 org.apache.lucene.index.DefaultIndexingChain$PerField.invert
+ 250  0.03% 98.39%       1 300560 org.apache.lucene.analysis.util.CharArrayMap.getSlot
+ 251  0.03% 98.42%       1 300561 org.apache.lucene.util.AttributeSource.clearAttributes
+ 252  0.03% 98.45%       1 300562 org.apache.lucene.index.DocumentsWriterFlushQueue.addFlushTicket
+ 253  0.03% 98.48%       1 300563 org.apache.lucene.index.PrefixCodedTerms$Builder.<init>
+ 254  0.03% 98.51%       1 300566 org.apache.lucene.index.NumericDocValuesWriter$1.iterator
+ 255  0.03% 98.53%       1 300567 org.apache.lucene.util.packed.PackedLongValues$Iterator.next
+ 256  0.03% 98.56%       1 300568 org.apache.lucene.codecs.compressing.CompressingStoredFieldsIndexWriter.writeBlock
+ 257  0.03% 98.59%       1 300569 org.apache.lucene.codecs.perfield.PerFieldPostingsFormat$FieldsWriter.addField
+ 258  0.03% 98.62%       1 300570 org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.<clinit>
+ 259  0.03% 98.65%       1 300571 org.apache.lucene.codecs.MultiLevelSkipListWriter.<init>
+ 260  0.03% 98.68%       1 300572 org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare
+ 261  0.03% 98.71%       1 300574 org.apache.lucene.util.fst.Builder.<clinit>
+ 262  0.03% 98.74%       1 300575 org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$PendingBlock.compileIndex
+ 263  0.03% 98.76%       1 300577 org.apache.lucene.util.fst.BytesRefFSTEnum.<init>
+ 264  0.03% 98.79%       1 300578 org.apache.lucene.store.RAMOutputStream.writeTo
+ 265  0.03% 98.82%       1 300579 org.apache.lucene.codecs.lucene41.Lucene41PostingsWriter.finishTerm
+ 266  0.03% 98.85%       1 300582 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+ 267  0.03% 98.88%       1 300583 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+ 268  0.03% 98.91%       1 300584 org.apache.lucene.util.fst.FST.readFirstRealTargetArc
+ 269  0.03% 98.94%       1 300585 org.apache.lucene.util.fst.FST.readNextRealArc
+ 270  0.03% 98.97%       1 300586 org.apache.lucene.util.fst.FST$Arc.isLast
+ 271  0.03% 98.99%       1 300587 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+ 272  0.03% 99.02%       1 300588 java.util.Arrays.copyOf
+ 273  0.03% 99.05%       1 300589 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+ 274  0.03% 99.08%       1 300590 org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare
+ 275  0.03% 99.11%       1 300591 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+ 276  0.03% 99.14%       1 300592 org.apache.lucene.util.fst.BytesRefFSTEnum.setResult
+ 277  0.03% 99.17%       1 300593 org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.pushTerm
+ 278  0.03% 99.20%       1 300594 org.apache.lucene.util.BytesRefHash$1.comparePivot
+ 279  0.03% 99.22%       1 300596 org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare
+ 280  0.03% 99.25%       1 300597 org.apache.lucene.util.IntroSorter.quicksort
+ 281  0.03% 99.28%       1 300598 org.apache.lucene.util.BytesRefHash$1.comparePivot
+ 282  0.03% 99.31%       1 300599 org.apache.lucene.util.BytesRef$UTF8SortedAsUnicodeComparator.compare
+ 283  0.03% 99.34%       1 300600 org.apache.lucene.util.BytesRefHash$1.comparePivot
+ 284  0.03% 99.37%       1 300601 org.apache.lucene.util.Sorter.insertionSort
+ 285  0.03% 99.40%       1 300602 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+ 286  0.03% 99.43%       1 300604 org.apache.lucene.util.packed.BulkOperationPacked.encode
+ 287  0.03% 99.45%       1 300607 org.apache.lucene.store.DataInput.readVInt
+ 288  0.03% 99.48%       1 300608 org.apache.lucene.codecs.lucene41.ForUtil.bitsRequired
+ 289  0.03% 99.51%       1 300609 org.apache.lucene.store.DataOutput.writeVInt
+ 290  0.03% 99.54%       1 300610 org.apache.lucene.util.fst.BytesStore$2.<init>
+ 291  0.03% 99.57%       1 300611 org.apache.lucene.util.packed.AbstractPagedMutable.<init>
+ 292  0.03% 99.60%       1 300612 org.apache.lucene.util.fst.FST.readRootArcs
+ 293  0.03% 99.63%       1 300613 org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter.encodeOutput
+ 294  0.03% 99.66%       1 300614 org.apache.lucene.util.packed.BulkOperation.writeLong
+ 295  0.03% 99.68%       1 300615 org.apache.lucene.store.OutputStreamIndexOutput.writeBytes
+ 296  0.03% 99.71%       1 300616 org.apache.lucene.codecs.blocktree.BlockTreeTermsWriter$TermsWriter.pushTerm
+ 297  0.03% 99.74%       1 300617 org.apache.lucene.index.FreqProxTermsWriterPerField.flush
+ 298  0.03% 99.77%       1 300618 java.util.Arrays.binarySearch0
+ 299  0.03% 99.80%       1 300619 org.apache.lucene.index.DocumentsWriterPerThread.sealFlushedSegment
+ 300  0.03% 99.83%       1 300620 org.apache.lucene.store.CompoundFileWriter.createOutput
+ 301  0.03% 99.86%       1 300622 java.util.zip.CRC32.updateBytes
+ 302  0.03% 99.89%       1 300623 java.io.UnixFileSystem.getLength
+ 303  0.03% 99.91%       1 300624 java.util.Collections.singletonIterator
+ 304  0.03% 99.94%       1 300626 org.apache.lucene.index.TieredMergePolicy.findMerges
+ 305  0.03% 99.97%       1 300630 org.apache.lucene.index.BufferedUpdatesStream.applyDeletesAndUpdates
+ 306  0.03% 100.00%       1 300632 java.lang.ClassLoader.loadClass
+CPU SAMPLES END
